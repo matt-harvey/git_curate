@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     git_curate (0.1.0)
+      highline (= 2.0.0)
+      tabulo (= 1.2.0)
 
 GEM
   remote: https://rubygems.org/
