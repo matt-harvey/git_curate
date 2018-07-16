@@ -2,6 +2,8 @@
 
 [![Gem Version][GV img]][Gem Version]
 
+<img src="https://raw.githubusercontent.com/matt-harvey/git_curate/master/assets/demo.gif" width="1000" alt="Demo" />
+
 ## Motivation
 
 After a while, my local repo becomes cluttered with branches, and `git branch` outputs an awkwardly
