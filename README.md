@@ -1,5 +1,7 @@
 # git curate
 
+[![Gem Version][GV img]][Gem Version]
+
 ## Motivation
 
 After a while, my local repo becomes cluttered with branches, and `git branch` outputs an awkwardly
@@ -45,3 +47,6 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/matt-h
 
 The gem is available as open source under the terms of the [MIT
 License](http://opensource.org/licenses/MIT).
+
+[Gem Version]: https://rubygems.org/gems/git_curate
+[GV img]: https://img.shields.io/gem/v/git_curate.svg?style=plastic
