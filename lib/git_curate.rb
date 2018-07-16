@@ -19,20 +19,20 @@ module GitCurate
 
         t.add_column(:branch, header: "Branch", align_header: :left) { |branch| branch }
 
-        t.add_column("Last commit date", align_header: :left) do |branch|
+        t.add_column("Last commit", align_header: :left) do |branch|
           `git log -n1 --date=short --format='format:%cd' #{branch}`
         end
 
-        t.add_column("Last commit author", align_header: :left) do |branch|
+        t.add_column("Last author", align_header: :left) do |branch|
           `git log -n1 --format='format:%an' #{branch}`
         end
 
-        t.add_column("Last commit subject", align_header: :left) do |branch|
+        t.add_column("Last subject", align_header: :left) do |branch|
           `git log -n1 --format='format:%s' #{branch}`
         end
       end
 
-      table.shrinkwrap!(max_table_width: 200)
+      table.shrinkwrap!(max_table_width: 125)
 
       branches_to_delete = []
 
