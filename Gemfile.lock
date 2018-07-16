@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    git_curate (0.1.0)
+    git_curate (0.1.1)
       highline (= 2.0.0)
       tabulo (= 1.2.0)
 
