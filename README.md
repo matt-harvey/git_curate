@@ -2,14 +2,14 @@
 
 ## Motivation
 
-After a while, my local repo becomes full of branches, and `git branch` outputs an awkwardly long
-list. I want to delete some of those branches to bring that list back under control; but I
-can't always remember which branches are which from the name alone, and inspecting them one at a
-time and _then_ running `git branch -D` in a separate step, is painful.
+After a while, my local repo becomes cluttered with branches, and `git branch` outputs an awkwardly
+long list. I want to delete some of those branches to bring that list back under control; but I
+can't always remember which branches I want to keep from the branch names alone; and inspecting them
+one at a time and _then_ running `git branch -D` in a separate step, is painful.
 
-I wrote `git curate` to ease this pain. It steps through the local branches of a repo one at a
-time, outputting a small amount of information about each branch (author, last commit date and
-last commit summary), and prompting you to either keep or delete each branch as you go.
+`git curate` is intended to ease this pain. It steps you through the local branches of a repo one at a
+time, outputting a small amount of information about each branch (last commit date, author and
+summary), and prompting you either to keep or to delete each branch as you go.
 
 ## Installation
 
@@ -25,8 +25,8 @@ From within a git repo, run:
 git curate
 ```
 
-This will step you through your local branches one at a time, prompting you whether to keep or
-delete each branch in what should be a self-explanatory fashion.
+This will step you through your local branches one at a time, asking you whether to keep or
+delete each branch in what should be a fairly self-explanatory fashion.
 
 ## Development
 
