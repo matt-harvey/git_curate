@@ -33,7 +33,13 @@ git curate
 
 This will step you through your local branches one at a time, asking you whether to keep or
 delete each branch in what should be a fairly self-explanatory fashion. Note the branch
-you are currently on will not be included in the list.
+you are currently on will not be included in the list, as `git` does not allow you to delete
+the branch you're on.
+
+(Note the space after `git`—we have effectively added a subcommand to `git` just by installing
+a gem. When `git_curate` is installed, an executable is created called `git-curate`.
+In general, for any executable of the form _git-xyz_ in your `PATH`, `git` will automatically
+recognize _xyz_ as a subcommand, and will run that executable whenever that subcommand is invoked.)
 
 ## Development
 
