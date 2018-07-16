@@ -10,6 +10,8 @@ GEM
   specs:
     highline (2.0.0)
     rake (11.3.0)
+    rake-version (1.0.1)
+      rake (> 11.1)
     tabulo (1.2.0)
 
 PLATFORMS
@@ -18,9 +20,8 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   git_curate!
-  highline
   rake (~> 11.0)
-  tabulo
+  rake-version (~> 1.0)
 
 BUNDLED WITH
    1.16.1
