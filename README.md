@@ -26,7 +26,8 @@ git curate
 ```
 
 This will step you through your local branches one at a time, asking you whether to keep or
-delete each branch in what should be a fairly self-explanatory fashion.
+delete each branch in what should be a fairly self-explanatory fashion. Note the branch
+you are currently on will not be included in the list.
 
 ## Development
 
