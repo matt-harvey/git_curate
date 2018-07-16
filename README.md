@@ -13,9 +13,13 @@ summary), and prompting you either to keep or to delete each branch as you go.
 
 ## Installation
 
+You'll need Ruby v2.1.10 or higher. Run
+
 ```
 gem install git_curate
 ```
+
+to install the executable.
 
 ## Usage
 
