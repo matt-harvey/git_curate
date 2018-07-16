@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require "git_curate"
+
+runner = GitCurate::Runner.new
+runner.run

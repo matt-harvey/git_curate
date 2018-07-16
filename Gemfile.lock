@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    git_curate (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    highline (2.0.0)
+    rake (11.3.0)
+    tabulo (1.2.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler (~> 1.16)
+  git_curate!
+  highline
+  rake (~> 11.0)
+  tabulo
+
+BUNDLED WITH
+   1.16.1
