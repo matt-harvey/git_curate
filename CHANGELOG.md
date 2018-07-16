@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.2.0
+
+* Make output more compact.
+* Improve README.
+
 ### v0.1.1
 
 Fix runtime dependency specification.
