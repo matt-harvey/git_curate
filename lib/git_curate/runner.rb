@@ -28,7 +28,7 @@ module GitCurate
           `git log -n1 --format='format:%s' #{branch}`
         end
 
-        t.add_column("Merged into HEAD?", align_header: :left) do |branch|
+        t.add_column("Merged\ninto HEAD?", align_header: :left) do |branch|
           merged_branches.include?(branch) ? "Merged" : "Not merged"
         end
       end
@@ -38,7 +38,7 @@ module GitCurate
       branches_to_delete = []
 
       table.each_with_index do |row, index|
-        case HighLine.ask("#{row} Mark for deletion? [y/n/done/abort/help] ")
+        case HighLine.ask("#{row} Delete? [y/n/done/abort/help] ")
         when "y"
           branches_to_delete << row.to_h[:branch]
         when "n"
