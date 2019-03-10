@@ -2,7 +2,7 @@
 
 [![Gem Version][GV img]][Gem Version]
 
-<img src="https://raw.githubusercontent.com/matt-harvey/git_curate/master/assets/demo2.gif" width="1000" alt="Demo" />
+<img src="https://raw.githubusercontent.com/matt-harvey/git_curate/master/assets/demo.gif" width="1000" alt="Demo" />
 
 ## Motivation
 
