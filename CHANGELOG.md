@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.3.0
+
+* Add "Merged into HEAD?" column.
+
 ### v0.2.0
 
 * Make output more compact.

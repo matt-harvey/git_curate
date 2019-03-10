@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    git_curate (0.2.0)
+    git_curate (0.3.0)
       highline (= 2.0.0)
       tabulo (= 1.2.0)
 
@@ -24,4 +24,4 @@ DEPENDENCIES
   rake-version (~> 1.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.6
