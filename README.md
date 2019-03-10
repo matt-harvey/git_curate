@@ -11,9 +11,10 @@ long list. I want to delete some of those branches to bring that list back under
 can't always remember which branches I want to keep from the branch names alone; and inspecting them
 one at a time and _then_ running `git branch -D` in a separate step, is painful.
 
-`git curate` is intended to ease this pain. It steps you through the local branches of a repo one at a
-time, outputting a small amount of information about each branch (last commit date, author and
-summary), and prompting you either to keep or to delete each branch as you go.
+`git curate` is intended to ease this pain. It steps you through the local branches of a repo one at
+a time, outputting a small amount of information about each branch (last commit date, author and
+summary, and whether the branch has been merged into the current HEAD), and prompting you either to
+keep or to delete each branch as you go.
 
 ## Installation
 

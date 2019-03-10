@@ -8,7 +8,8 @@ module GitCurate
         exit
       end
 
-      branches = `git branch`.split($/).reject { |b| current_branch?(b) }.map(&:strip)
+      branches = command_to_a("git branch").reject { |b| current_branch?(b) }
+      merged_branches = command_to_a("git branch --merged").reject { |b| current_branch?(b) }.to_set
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0) do |t|
@@ -25,6 +26,10 @@ module GitCurate
 
         t.add_column("Last subject", align_header: :left) do |branch|
           `git log -n1 --format='format:%s' #{branch}`
+        end
+
+        t.add_column("Merged into HEAD?", align_header: :left) do |branch|
+          merged_branches.include?(branch) ? "Merged" : "Not merged"
         end
       end
 
@@ -83,6 +88,12 @@ module GitCurate
     abort  -- abort without deleting any branches
     help   -- print this help message
   EOL
+    end
+
+    # Runs the passed string command as a system command, gathers any lines of output, stripped of
+    # leading and trailing whitespace, and returns them as an array.
+    def command_to_a(command)
+      `#{command}`.split($/).map(&:strip)
     end
 
   end
