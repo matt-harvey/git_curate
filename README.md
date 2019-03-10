@@ -49,7 +49,7 @@ After checking out the repo, run `bin/setup` to install dependencies.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/matt-harvey/git_curate.
+Bug reports and pull requests are welcome on [GitHub](https://github.com/matt-harvey/git_curate).
 
 ## License
 
