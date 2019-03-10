@@ -12,9 +12,15 @@ can't always remember which branches I want to keep from the branch names alone;
 one at a time and _then_ running `git branch -D` in a separate step, is painful.
 
 `git curate` is intended to ease this pain. It steps you through the local branches of a repo one at
-a time, outputting a small amount of information about each branch (last commit date, author and
-summary, and whether the branch has been merged into the current HEAD), and prompting you either to
-keep or to delete each branch as you go.
+a time, outputting the following information about each:
+
+* Last commit date
+* Last commit author
+* Last commit summary
+* Whether the branch has been merged into the current HEAD
+* The status of the branch relative to the upstream branch it is tracking (if any)
+
+You can then select whether to delete or keep each branch as you go.
 
 ## Installation
 

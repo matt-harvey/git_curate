@@ -1,5 +1,9 @@
 module GitCurate
 
+  # Regexes for unpacking the output of `git branch -vv`
+  BRANCH_NAME_REGEX = /\s+/
+  REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
+
   class Runner
 
     def run
@@ -10,6 +14,7 @@ module GitCurate
 
       branches = command_to_a("git branch").reject { |b| current_branch?(b) }
       merged_branches = command_to_a("git branch --merged").reject { |b| current_branch?(b) }.to_set
+      upstreams = upstream_branches
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0) do |t|
@@ -30,6 +35,10 @@ module GitCurate
 
         t.add_column("Merged\ninto HEAD?", align_header: :left) do |branch|
           merged_branches.include?(branch) ? "Merged" : "Not merged"
+        end
+
+        t.add_column("Status vs\nupstream", align_header: :left) do |branch|
+          upstreams.fetch(branch, "No upstream")
         end
       end
 
@@ -67,6 +76,27 @@ module GitCurate
 
     def current_branch?(branch)
       branch =~ /^\s*\*/
+    end
+
+    # Returns a Hash containing, as keys, all local branches that have upstream branches (excluding
+    # the current branch) and, as values, a brief description of each branch's status relative
+    # to its upstream branch (up to date, or ahead/behind)
+    def upstream_branches
+      command_to_a("git branch -vv").map do |line|
+        branch_name = line.split(BRANCH_NAME_REGEX)[0]
+        remote_info = line[REMOTE_INFO_REGEX, 1]
+        if remote_info.nil?
+          nil
+        else
+          comparison_raw = remote_info.split(":")
+          comparison = if comparison_raw.length < 2
+                         "Up to date"
+                       else
+                         Unicode::capitalize(comparison_raw[1].strip)
+                       end
+          [branch_name, comparison]
+        end
+      end.compact.to_h
     end
 
     def finalize(branches_to_delete)
