@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.4.0
+
+* Add "Status vs upstream" column.
+
 ### v0.3.0
 
 * Add "Merged into HEAD?" column.
