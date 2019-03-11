@@ -42,7 +42,7 @@ module GitCurate
         end
       end
 
-      table.shrinkwrap!(max_table_width: 160)
+      table.shrinkwrap!(max_table_width: 150)
 
       branches_to_delete = []
 
