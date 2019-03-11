@@ -16,7 +16,7 @@ a time, outputting the following information about each:
 
 * Last commit date
 * Last commit author
-* Last commit summary
+* Last commit subject
 * Whether the branch has been merged into the current HEAD
 * The status of the branch relative to the upstream branch it is tracking (if any)
 
