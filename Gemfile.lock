@@ -4,7 +4,6 @@ PATH
     git_curate (0.3.0)
       highline (= 2.0.0)
       tabulo (= 1.2.0)
-      unicode (= 0.4.4.4)
 
 GEM
   remote: https://rubygems.org/
@@ -14,7 +13,6 @@ GEM
     rake-version (1.0.1)
       rake (> 11.1)
     tabulo (1.2.0)
-    unicode (0.4.4.4)
 
 PLATFORMS
   ruby

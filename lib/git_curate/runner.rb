@@ -92,7 +92,7 @@ module GitCurate
           comparison = if comparison_raw.length < 2
                          "Up to date"
                        else
-                         Unicode::capitalize(comparison_raw[1].strip)
+                         comparison_raw[1].strip.capitalize
                        end
           [branch_name, comparison]
         end

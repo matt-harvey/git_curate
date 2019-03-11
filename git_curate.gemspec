@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "highline", "2.0.0"
   spec.add_runtime_dependency "tabulo", "1.2.0"
-  spec.add_runtime_dependency "unicode", "0.4.4.4"
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 11.0"
