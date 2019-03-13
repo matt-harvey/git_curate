@@ -13,8 +13,8 @@ module GitCurate
       end
 
       branches = command_to_a("git branch").reject { |b| current_branch?(b) }
-      merged_branches = command_to_a("git branch --merged").reject { |b| current_branch?(b) }.to_set
-      upstreams = upstream_branches
+      merged_branches = command_to_a("git branch --merged").to_set
+      upstream_branches = get_upstream_branches
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0) do |t|
@@ -38,7 +38,7 @@ module GitCurate
         end
 
         t.add_column("Status vs\nupstream", align_header: :left) do |branch|
-          upstreams.fetch(branch, "No upstream")
+          upstream_branches.fetch(branch, "No upstream")
         end
       end
 
@@ -81,7 +81,7 @@ module GitCurate
     # Returns a Hash containing, as keys, all local branches that have upstream branches,
     # and, as values, a brief description of each branch's status relative to its upstream
     # branch (up to date, or ahead/behind)
-    def upstream_branches
+    def get_upstream_branches
       command_to_a("git branch -vv").map do |line|
         branch_name = line.split(BRANCH_NAME_REGEX)[0]
         remote_info = line[REMOTE_INFO_REGEX, 1]
