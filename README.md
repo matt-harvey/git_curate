@@ -22,6 +22,10 @@ a time, outputting the following information about each:
 
 You can then select whether to delete or keep each branch as you go.
 
+**Note** `git curate` does _not_ run `git fetch` before generating its output. If you want to
+make sure the "Status vs upstream" column reflects the current state of the remote branches,
+be sure to run `git fetch` first.
+
 ## Installation
 
 You'll need Ruby v2.1.10 or higher. Run
