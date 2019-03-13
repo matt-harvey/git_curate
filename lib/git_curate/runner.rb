@@ -78,9 +78,9 @@ module GitCurate
       branch =~ /^\s*\*/
     end
 
-    # Returns a Hash containing, as keys, all local branches that have upstream branches (excluding
-    # the current branch) and, as values, a brief description of each branch's status relative
-    # to its upstream branch (up to date, or ahead/behind)
+    # Returns a Hash containing, as keys, all local branches that have upstream branches,
+    # and, as values, a brief description of each branch's status relative to its upstream
+    # branch (up to date, or ahead/behind)
     def upstream_branches
       command_to_a("git branch -vv").map do |line|
         branch_name = line.split(BRANCH_NAME_REGEX)[0]
