@@ -56,9 +56,12 @@ recognize _xyz_ as a subcommand, and will run that executable whenever that subc
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies.
+PRs are welcome.
 
-Run `rake -T` to see a list of Rake tasks available in the development environment.
+To start working on `git_curate`, `git clone` and `cd` into your fork of the repo, then run `bin/setup` to
+install dependencies.
+
+For a list of other Rake tasks that are available in the development environment, run `rake -T`.
 
 ## Contributing
 
