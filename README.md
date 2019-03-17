@@ -54,18 +54,14 @@ a gem. When `git_curate` is installed, an executable is created called `git-cura
 In general, for any executable of the form _git-xyz_ in your `PATH`, `git` will automatically
 recognize _xyz_ as a subcommand, and will run that executable whenever that subcommand is invoked.)
 
-## Development
+## Contributing
 
-PRs are welcome.
+Bug reports and pull requests are welcome on [GitHub](https://github.com/matt-harvey/git_curate).
 
 To start working on `git_curate`, `git clone` and `cd` into your fork of the repo, then run `bin/setup` to
 install dependencies.
 
-For a list of other Rake tasks that are available in the development environment, run `rake -T`.
-
-## Contributing
-
-Bug reports and pull requests are welcome on [GitHub](https://github.com/matt-harvey/git_curate).
+For a list of Rake tasks that are available in the development environment, run `rake -T`.
 
 ## License
 
