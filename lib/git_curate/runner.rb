@@ -1,6 +1,7 @@
 require "highline/import"
 require "set"
 require "tabulo"
+require "tty-screen"
 
 module GitCurate
 
@@ -46,12 +47,15 @@ module GitCurate
         end
       end
 
-      table.shrinkwrap!(max_table_width: 150)
+      prompt = " Delete? [y/n/done/abort/help] "
+      longest_response = "abort"
+      prompt_and_response_width = prompt.length + longest_response.length + 1
+      table.shrinkwrap!(max_table_width: TTY::Screen.width - prompt_and_response_width)
 
       branches_to_delete = []
 
       table.each_with_index do |row, index|
-        case HighLine.ask("#{row} Delete? [y/n/done/abort/help] ")
+        case HighLine.ask("#{row}#{prompt}")
         when "y"
           branches_to_delete << row.to_h[:branch]
         when "n"
