@@ -1,3 +1,7 @@
+require "highline/import"
+require "set"
+require "tabulo"
+
 module GitCurate
 
   # Regexes for unpacking the output of `git branch -vv`
