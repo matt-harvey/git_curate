@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.4.2
+
+* Cap output to terminal width automatically.
+* Documentation improvements.
+
 ### v0.4.0
 
 * Add "Status vs upstream" column.

@@ -1,9 +1,10 @@
 PATH
   remote: .
   specs:
-    git_curate (0.4.0)
+    git_curate (0.4.2)
       highline (= 2.0.1)
       tabulo (= 1.2.1)
+      tty-screen (= 0.6.5)
 
 GEM
   remote: https://rubygems.org/
@@ -13,6 +14,7 @@ GEM
     rake-version (1.0.1)
       rake (> 11.1)
     tabulo (1.2.1)
+    tty-screen (0.6.5)
 
 PLATFORMS
   ruby
