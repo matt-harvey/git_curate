@@ -15,11 +15,13 @@ module GitCurate
         opts.banner = <<-EOF
   Usage: git curate [options]
 
-  Interactively step through the local branches of the current git repository (other than the current
-  branch), printing various information and asking whether to keep or delete each branch.
+  Interactively step through the local branches of the current git repository, showing various
+  information and asking whether to keep or delete each branch.
+
+  In the default (interactive) mode, the current branch is excluded, as it cannot be deleted.
 
   Note git-curate does not perform a "git fetch"; if you want to be sure the output reflects the current
-  state of any remotes, you should run first run "git fetch" yourself.
+  state of any remotes, run "git fetch" first.
 
   Options:
   EOF
@@ -27,7 +29,7 @@ module GitCurate
         opts.on(
           "-l",
           "--list",
-          "Output information on local branches, including the current one, without stepping through them interactively"
+          "Show summary of local branches, including current branch, without stepping through interactively"
         ) do
           self.parsed_options[:list] = true
         end
