@@ -18,8 +18,6 @@ class Parser
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = <<-EOF
-#{version_and_copyright}
-
 Usage: git curate [options]
 
 By default, interactively steps through the local branches of the current git repository (if any), other than
