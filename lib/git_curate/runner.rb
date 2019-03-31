@@ -109,11 +109,9 @@ module GitCurate
     end
 
     def displayable_branch(raw_branch)
-      if interactive?
-        raw_branch.lstrip
-      else
-        raw_branch
-      end
+      return raw_branch if interactive?
+
+      current_branch?(raw_branch) ? raw_branch : "  " + raw_branch
     end
 
     def excluded_branch?(raw_branch)
@@ -169,7 +167,7 @@ module GitCurate
     # Runs the passed string command as a system command, gathers any lines of output, stripped of
     # leading and trailing whitespace, and returns them as an array.
     def command_to_a(command)
-      `#{command}`.split($/).map(&:rstrip)
+      `#{command}`.split($/).map(&:strip)
     end
 
   end
