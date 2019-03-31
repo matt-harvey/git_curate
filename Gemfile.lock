@@ -3,6 +3,7 @@ PATH
   specs:
     git_curate (0.4.2)
       highline (= 2.0.1)
+      slop (= 4.6.2)
       tabulo (= 1.2.1)
       tty-screen (= 0.6.5)
 
@@ -13,6 +14,7 @@ GEM
     rake (11.3.0)
     rake-version (1.0.1)
       rake (> 11.1)
+    slop (4.6.2)
     tabulo (1.2.1)
     tty-screen (0.6.5)
 

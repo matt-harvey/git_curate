@@ -9,7 +9,13 @@ module GitCurate
   BRANCH_NAME_REGEX = /\s+/
   REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
 
+  Branch = Struct.new("Branch", :raw, :proper, :displayable)
+
   class Runner
+
+    def initialize(opts)
+      @opts = opts
+    end
 
     def run
       if ARGV.length != 0
@@ -17,73 +23,105 @@ module GitCurate
         exit
       end
 
-      branches = command_to_a("git branch").reject { |b| current_branch?(b) }
+      branches = command_to_a("git branch").reject { |raw_branch| excluded_branch?(raw_branch) }.map do |raw_branch|
+        Struct::Branch.new(raw_branch, proper_branch(raw_branch), displayable_branch(raw_branch))
+      end
+
       merged_branches = command_to_a("git branch --merged").to_set
       upstream_branches = get_upstream_branches
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0) do |t|
 
-        t.add_column(:branch, header: "Branch", align_header: :left) { |branch| branch }
+        t.add_column(:branch, header: "Branch", align_header: :left) { |branch| branch.displayable }
 
         t.add_column("Last commit", align_header: :left) do |branch|
-          `git log -n1 --date=short --format='format:%cd' #{branch}`
+          `git log -n1 --date=short --format='format:%cd' #{branch.proper}`
         end
 
         t.add_column("Last author", align_header: :left) do |branch|
-          `git log -n1 --format='format:%an' #{branch}`
+          `git log -n1 --format='format:%an' #{branch.proper}`
         end
 
         t.add_column("Last subject", align_header: :left) do |branch|
-          `git log -n1 --format='format:%s' #{branch}`
+          `git log -n1 --format='format:%s' #{branch.proper}`
         end
 
         t.add_column("Merged\ninto HEAD?", align_header: :left) do |branch|
-          merged_branches.include?(branch) ? "Merged" : "Not merged"
+          merged_branches.include?(branch.proper) ? "Merged" : "Not merged"
         end
 
         t.add_column("Status vs\nupstream", align_header: :left) do |branch|
-          upstream_branches.fetch(branch, "No upstream")
+          upstream_branches.fetch(branch.proper, "No upstream")
         end
       end
 
       prompt = " Delete? [y/n/done/abort/help] "
       longest_response = "abort"
-      prompt_and_response_width = prompt.length + longest_response.length + 1
+      prompt_and_response_width =
+        if interactive?
+          prompt.length + longest_response.length + 1
+        else
+          0
+        end
       table.shrinkwrap!(max_table_width: TTY::Screen.width - prompt_and_response_width)
 
       branches_to_delete = []
 
       table.each_with_index do |row, index|
-        case HighLine.ask("#{row}#{prompt}")
-        when "y"
-          branches_to_delete << row.to_h[:branch]
-        when "n"
-          ;  # do nothing
-        when "done"
-          puts table.horizontal_rule
-          finalize(branches_to_delete)
-          exit
-        when "abort"
-          puts table.horizontal_rule
-          puts "\nAborting. No branches deleted."
-          exit
+        if interactive?
+          case HighLine.ask("#{row}#{prompt}")
+          when "y"
+            branches_to_delete << row.to_h[:branch].proper
+          when "n"
+            ;  # do nothing
+          when "done"
+            puts table.horizontal_rule
+            finalize(branches_to_delete)
+            exit
+          when "abort"
+            puts table.horizontal_rule
+            puts "\nAborting. No branches deleted."
+            exit
+          else
+            puts table.horizontal_rule
+            print_help
+            puts table.horizontal_rule unless index == 0
+            redo
+          end
         else
-          puts table.horizontal_rule
-          print_help
-          puts table.horizontal_rule unless index == 0
-          redo
+          puts row
         end
       end
       puts table.horizontal_rule
 
-      finalize(branches_to_delete)
+      finalize(branches_to_delete) if interactive?
     end
 
     private
 
-    def current_branch?(branch)
-      branch =~ /^\s*\*/
+    def interactive?
+      !@opts[:list]
+    end
+
+    def proper_branch(raw_branch)
+      raw_branch.lstrip.gsub(/^\*\s*/, '')
+    end
+
+    def displayable_branch(raw_branch)
+      if interactive?
+        raw_branch.lstrip
+      else
+        raw_branch
+      end
+    end
+
+    def excluded_branch?(raw_branch)
+      interactive? && current_branch?(raw_branch)
+    end
+
+    def current_branch?(raw_branch)
+      raw_branch =~ /^\s*\*/
     end
 
     # Returns a Hash containing, as keys, all local branches that have upstream branches,
@@ -131,7 +169,7 @@ module GitCurate
     # Runs the passed string command as a system command, gathers any lines of output, stripped of
     # leading and trailing whitespace, and returns them as an array.
     def command_to_a(command)
-      `#{command}`.split($/).map(&:strip)
+      `#{command}`.split($/).map(&:rstrip)
     end
 
   end

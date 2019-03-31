@@ -1,6 +1,73 @@
 #!/usr/bin/env ruby
 
 require "git_curate"
+require "optparse"
 
-runner = GitCurate::Runner.new
+Options = Struct.new(:name)
+
+class Parser
+
+  attr_reader :parsed_options
+
+  def initialize
+    @parsed_options = {}
+  end
+
+  def parse(options)
+    args = Options.new("git curate")
+
+    opt_parser = OptionParser.new do |opts|
+      opts.banner = <<-EOF
+#{version_and_copyright}
+
+Usage: git curate [options]
+
+By default, interactively steps through the local branches of the current git repository (if any), other than
+the currently checked out branch, printing various information and asking whether to keep or delete each branch.
+
+Note that git-curate does not perform a "git fetch"; if you want to be sure the output reflects the current state
+of any remotes, you should run first run "git fetch" yourself.
+
+Options:
+EOF
+
+      opts.on(
+        "-l",
+        "--list",
+        "Output information on local branches, including the current one, without stepping through them interactively"
+      ) do
+        self.parsed_options[:list] = true
+      end
+
+      opts.on("-h", "Print this help message") do
+        puts opts
+        exit
+      end
+
+      opts.on("-v", "--version", "Print the currently installed version of this program") do
+        puts version_and_copyright
+        exit
+      end
+    end
+
+    opt_parser.parse!(options)
+    return args
+  end
+
+  def version_and_copyright
+    "git curate v#{GitCurate::VERSION} #{GitCurate::COPYRIGHT}"
+  end
+end
+
+parser = Parser.new
+
+begin
+  parser.parse(ARGV)
+rescue OptionParser::InvalidOption
+  puts "Unrecognized option"
+  puts 'For help, enter `git curate -h`'
+  exit(1)
+end
+
+runner = GitCurate::Runner.new(parser.parsed_options)
 runner.run
