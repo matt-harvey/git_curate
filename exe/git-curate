@@ -20,11 +20,11 @@ class Parser
       opts.banner = <<-EOF
 Usage: git curate [options]
 
-By default, interactively steps through the local branches of the current git repository (if any), other than
-the currently checked out branch, printing various information and asking whether to keep or delete each branch.
+Interactively step through the local branches of the current git repository (other than the current
+branch), printing various information and asking whether to keep or delete each branch.
 
-Note that git-curate does not perform a "git fetch"; if you want to be sure the output reflects the current state
-of any remotes, you should run first run "git fetch" yourself.
+Note git-curate does not perform a "git fetch"; if you want to be sure the output reflects the current
+state of any remotes, you should run first run "git fetch" yourself.
 
 Options:
 EOF
