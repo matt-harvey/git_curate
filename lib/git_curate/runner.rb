@@ -72,7 +72,7 @@ module GitCurate
         if interactive?
           case HighLine.ask("#{row}#{prompt}")
           when "y"
-            branches_to_delete << row.to_h[:branch].proper
+            branches_to_delete << proper_branch(row.to_h[:branch])
           when "n"
             ;  # do nothing
           when "done"
