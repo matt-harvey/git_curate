@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.4.3
+
+* Upgrade dependency versions
+
 ### v0.4.2
 
 * Cap output to terminal width automatically.
