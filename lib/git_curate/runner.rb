@@ -31,27 +31,27 @@ module GitCurate
       upstream_branches = get_upstream_branches
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
-        horizontal_rule_character: "-", column_padding: 0) do |t|
+        horizontal_rule_character: "-", column_padding: 0, align_header: :left) do |t|
 
-        t.add_column(:branch, header: "Branch", align_header: :left) { |branch| branch.displayable }
+        t.add_column(:branch, header: "Branch") { |branch| branch.displayable }
 
-        t.add_column("Last commit", align_header: :left) do |branch|
+        t.add_column("Last commit") do |branch|
           `git log -n1 --date=short --format='format:%cd' #{branch.proper}`
         end
 
-        t.add_column("Last author", align_header: :left) do |branch|
+        t.add_column("Last author") do |branch|
           `git log -n1 --format='format:%an' #{branch.proper}`
         end
 
-        t.add_column("Last subject", align_header: :left) do |branch|
+        t.add_column("Last subject") do |branch|
           `git log -n1 --format='format:%s' #{branch.proper}`
         end
 
-        t.add_column("Merged\ninto HEAD?", align_header: :left) do |branch|
+        t.add_column("Merged\ninto HEAD?") do |branch|
           merged_branches.include?(branch.proper) ? "Merged" : "Not merged"
         end
 
-        t.add_column("Status vs\nupstream", align_header: :left) do |branch|
+        t.add_column("Status vs\nupstream") do |branch|
           upstream_branches.fetch(branch.proper, "No upstream")
         end
       end
@@ -64,7 +64,7 @@ module GitCurate
         else
           0
         end
-      table.shrinkwrap!(max_table_width: TTY::Screen.width - prompt_and_response_width)
+      table.pack(max_table_width: TTY::Screen.width - prompt_and_response_width)
 
       branches_to_delete = []
 
