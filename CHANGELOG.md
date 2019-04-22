@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.5.0
+
+* Add `-l` option to output branch information non-interactively
+* Add help output (`-h` option)
+
 ### v0.4.3
 
 * Upgrade dependency versions
