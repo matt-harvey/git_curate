@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.5.1
+
+* Fix upstream branch not showing for current branch in `git curate -l`
+
 ### v0.5.0
 
 * Add `-l` option to output branch information non-interactively
