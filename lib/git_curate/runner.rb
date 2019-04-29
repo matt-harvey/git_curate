@@ -7,6 +7,7 @@ module GitCurate
 
   # Regexes for unpacking the output of `git branch -vv`
   BRANCH_NAME_REGEX = /\s+/
+  LEADING_STAR_REGEX = /^\* /
   REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
 
   Branch = Struct.new("Branch", :raw, :proper, :displayable)
@@ -127,6 +128,7 @@ module GitCurate
     # branch (up to date, or ahead/behind)
     def get_upstream_branches
       command_to_a("git branch -vv").map do |line|
+        line.gsub!(LEADING_STAR_REGEX, "")
         branch_name = line.split(BRANCH_NAME_REGEX)[0]
         remote_info = line[REMOTE_INFO_REGEX, 1]
         if remote_info.nil?
