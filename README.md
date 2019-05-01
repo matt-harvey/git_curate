@@ -44,18 +44,22 @@ From within a git repo, run:
 git curate
 ```
 
-This will step you through your local branches one at a time, asking you whether to keep or
-delete each branch in what should be a fairly self-explanatory fashion. Note the branch
-you are currently on will not be included in the list, as `git` does not allow you to delete
+This will step you through your local branches one at a time, outputting some information about
+each, and asking you whether to keep or delete each branch.
+
+At each branch, enter "n"&mdash;or simply press Enter&mdash;to _keep_ the branch and move to the next one;
+or enter "y" to select the branch for deletion.
+
+Entering "done" will conclude the session immediately, deleting all selected branches; and "abort" will
+end the session without deleting any branches. Once the final branch has been considered,
+any selected branches will be immediately deleted.
+
+Note the branch you are currently on will not be included in the list, as `git` does not allow you to delete
 the branch you're on.
 
 If you just want to view the information about your local branches without stepping through
-them interactively, enter `git branch --list` or `git branch -l`.
-
-(Note the space after `git`—we have effectively added a subcommand to `git` just by installing
-a gem. When `git_curate` is installed, an executable is created called `git-curate`.
-In general, for any executable of the form _git-xyz_ in your `PATH`, `git` will automatically
-recognize _xyz_ as a subcommand, and will run that executable whenever that subcommand is invoked.)
+them interactively, enter `git branch --list` or `git branch -l`. Your current branch _will_
+be included in this list in this case.
 
 ## Contributing
 

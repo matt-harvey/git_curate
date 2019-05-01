@@ -74,7 +74,7 @@ module GitCurate
           case HighLine.ask("#{row}#{prompt}")
           when "y"
             branches_to_delete << proper_branch(row.to_h[:branch])
-          when "n"
+          when "n", ""
             ;  # do nothing
           when "done"
             puts table.horizontal_rule
@@ -157,10 +157,11 @@ module GitCurate
 
     def print_help
       puts <<-EOL
-  Please enter one of:
+  Simply hit <Enter> to keep this branch and skip to the next one;
+  or enter one of the following commands:
     y      -- mark branch for deletion
-    n      -- keep branch
-    done   -- delete marked branches and exit session
+    n      -- keep branch (equivalent to just <Enter>)
+    done   -- delete selected branches and exit session
     abort  -- abort without deleting any branches
     help   -- print this help message
   EOL
