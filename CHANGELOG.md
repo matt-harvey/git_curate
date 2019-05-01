@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.6.0
+
+* Simply hitting Enter now lets you skip a branch without marking it for deletion;
+  no need to type "n".
+
 ### v0.5.1
 
 * Fix upstream branch not showing for current branch in `git curate -l`
