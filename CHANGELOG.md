@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.6.1
+
+* Align columns correctly when multibyte Unicode characters appear in commit messages.
+
 ### v0.6.0
 
 * Simply hitting Enter now lets you skip a branch without marking it for deletion;
