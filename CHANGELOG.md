@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.6.2
+
+* Upgrade dependency versions.
+
 ### v0.6.1
 
 * Align columns correctly when multibyte Unicode characters appear in commit messages.
