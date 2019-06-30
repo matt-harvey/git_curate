@@ -10,8 +10,6 @@ module GitCurate
   LEADING_STAR_REGEX = /^\* /
   REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
 
-  Branch = Struct.new("Branch", :raw, :proper, :displayable)
-
   class Runner
 
     def initialize(opts)
@@ -24,37 +22,20 @@ module GitCurate
         exit
       end
 
-      branches = command_to_a("git branch").reject { |raw_branch| excluded_branch?(raw_branch) }.map do |raw_branch|
-        Struct::Branch.new(raw_branch, proper_branch(raw_branch), displayable_branch(raw_branch))
-      end
-
+      branches = command_to_a("git branch").map { |b| Branch.new(b) }
+      branches.reject!(&:current?) if interactive?
       merged_branches = command_to_a("git branch --merged").to_set
       upstream_branches = get_upstream_branches
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0, align_header: :left) do |t|
 
-        t.add_column(:branch, header: "Branch") { |branch| branch.displayable }
-
-        t.add_column("Last commit") do |branch|
-          `git log -n1 --date=short --format='format:%cd' #{branch.proper}`
-        end
-
-        t.add_column("Last author") do |branch|
-          `git log -n1 --format='format:%an' #{branch.proper}`
-        end
-
-        t.add_column("Last subject") do |branch|
-          `git log -n1 --format='format:%s' #{branch.proper}`
-        end
-
-        t.add_column("Merged#{$/}into HEAD?") do |branch|
-          merged_branches.include?(branch.proper) ? "Merged" : "Not merged"
-        end
-
-        t.add_column("Status vs#{$/}upstream") do |branch|
-          upstream_branches.fetch(branch.proper, "No upstream")
-        end
+        t.add_column(:branch, header: "Branch") { |b| b.displayable_name(pad: !interactive?) }
+        t.add_column("Last commit", &:last_commit_date)
+        t.add_column("Last author", &:last_author)
+        t.add_column("Last subject", &:last_subject)
+        t.add_column("Merged#{$/}into HEAD?") { |b| merged_branches.include?(b.proper_name) ? "Merged" : "Not merged" }
+        t.add_column("Status vs#{$/}upstream") { |b| upstream_branches.fetch(b.proper_name, "No upstream") }
       end
 
       prompt = " Delete? [y/n/done/abort/help] "
@@ -73,7 +54,7 @@ module GitCurate
         if interactive?
           case HighLine.ask("#{row}#{prompt}")
           when "y"
-            branches_to_delete << proper_branch(row.to_h[:branch])
+            branches_to_delete << row.source.proper_name
           when "n", ""
             ;  # do nothing
           when "done"
@@ -103,24 +84,6 @@ module GitCurate
 
     def interactive?
       !@opts[:list]
-    end
-
-    def proper_branch(raw_branch)
-      raw_branch.lstrip.gsub(/^\*\s*/, '')
-    end
-
-    def displayable_branch(raw_branch)
-      return raw_branch if interactive?
-
-      current_branch?(raw_branch) ? raw_branch : "  " + raw_branch
-    end
-
-    def excluded_branch?(raw_branch)
-      interactive? && current_branch?(raw_branch)
-    end
-
-    def current_branch?(raw_branch)
-      raw_branch =~ /^\s*\*/
     end
 
     # Returns a Hash containing, as keys, all local branches that have upstream branches,
