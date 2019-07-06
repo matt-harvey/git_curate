@@ -48,11 +48,11 @@ module GitCurate
           `git log -n1 --format='format:%s' #{branch.proper}`
         end
 
-        t.add_column("Merged\ninto HEAD?") do |branch|
+        t.add_column("Merged#{$/}into HEAD?") do |branch|
           merged_branches.include?(branch.proper) ? "Merged" : "Not merged"
         end
 
-        t.add_column("Status vs\nupstream") do |branch|
+        t.add_column("Status vs#{$/}upstream") do |branch|
           upstream_branches.fetch(branch.proper, "No upstream")
         end
       end
@@ -82,7 +82,7 @@ module GitCurate
             exit
           when "abort"
             puts table.horizontal_rule
-            puts "\nAborting. No branches deleted."
+            puts "#{$/}Aborting. No branches deleted."
             exit
           else
             puts table.horizontal_rule
@@ -149,9 +149,9 @@ module GitCurate
       if branches_to_delete.size != 0
         puts
         system("git branch -D #{branches_to_delete.join(" ")}")
-        puts "\nDone"
+        puts "#{$/}Done"
       else
-        puts "\nNo branches deleted."
+        puts "#{$/}No branches deleted."
       end
     end
 
