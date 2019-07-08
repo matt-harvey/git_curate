@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.6.3
+
+* Fix formatting oof output on Windows.
+
 ### v0.6.2
 
 * Upgrade dependency versions.
