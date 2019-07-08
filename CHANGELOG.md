@@ -2,7 +2,7 @@
 
 ### v0.6.3
 
-* Fix formatting oof output on Windows.
+* Fix formatting of output on Windows.
 
 ### v0.6.2
 
