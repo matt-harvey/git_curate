@@ -1,3 +1,5 @@
+require "open3"
+
 module GitCurate
 
   class Branch
@@ -26,15 +28,15 @@ module GitCurate
     end
 
     def last_author
-      `git log -n1 --format=format:%an #{proper_name}`
+      Open3.capture2("git log -n1 --format=format:%an #{proper_name}").first
     end
 
     def last_commit_date
-      `git log -n1 --date=short --format=format:%cd #{proper_name}`
+      Open3.capture2("git log -n1 --date=short --format=format:%cd #{proper_name}").first
     end
 
     def last_subject
-      `git log -n1 --format=format:%s #{proper_name}`
+      Open3.capture2("git log -n1 --format=format:%s #{proper_name}").first
     end
 
   end

@@ -68,7 +68,7 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/matt-ha
 To start working on `git_curate`, `git clone` and `cd` into your fork of the repo, then run `bin/setup` to
 install dependencies.
 
-For a list of Rake tasks that are available in the development environment, run `rake -T`.
+To run the test suite, run `rake spec`. For a list of other Rake tasks, run `rake -T`.
 
 ## License
 
