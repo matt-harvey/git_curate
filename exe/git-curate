@@ -5,7 +5,9 @@ require "optparse"
 
 def main
   parser = GitCurate::CLIParser.new
-  parser.parse(ARGV)
+  continue = parser.parse(ARGV)
+  return unless continue
+
   runner = GitCurate::Runner.new(parser.parsed_options)
   runner.run
 rescue OptionParser::InvalidOption

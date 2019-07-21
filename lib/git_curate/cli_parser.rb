@@ -10,6 +10,8 @@ module GitCurate
       @parsed_options = {}
     end
 
+    # Sets @parsed_options according to the options received, and return truthy
+    # if and only if the program should continue after the options are passed.
     def parse(options)
       opt_parser = OptionParser.new do |opts|
         opts.banner = <<-EOF
@@ -36,16 +38,17 @@ module GitCurate
 
         opts.on("-h", "Print this help message") do
           puts opts
-          exit
+          return false
         end
 
         opts.on("-v", "--version", "Print the currently installed version of this program") do
           puts "git curate v#{GitCurate::VERSION} #{GitCurate::COPYRIGHT}"
-          exit
+          return false
         end
       end
 
       opt_parser.parse!(options)
+      return true
     end
   end
 end
