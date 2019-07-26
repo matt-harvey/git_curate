@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.6.4
+
+* Fix breakage on Ruby <= 2.3 due to unsupported Regex #match? method.
+
 ### v0.6.3
 
 * Fix formatting of output on Windows.
