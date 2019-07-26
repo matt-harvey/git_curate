@@ -16,7 +16,7 @@ module GitCurate
     end
 
     def current?
-      @current ||= /^\*\s+/.match?(@raw_name)
+      @current ||= (/^\*\s+/ =~ @raw_name)
     end
 
     def displayable_name(pad:)
