@@ -4,6 +4,8 @@ module GitCurate
 
   class Branch
 
+    CURRENT_BRANCH_REGEX = /^\*\s+/
+
     attr_reader :raw_name
 
     # raw_name should start in "* " if the current branch, but should otherwise have not whitespace.
@@ -12,11 +14,11 @@ module GitCurate
     end
 
     def proper_name
-      @proper_name ||= @raw_name.lstrip.gsub(/^\*\s+/, '')
+      @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
     end
 
     def current?
-      @current ||= (/^\*\s+/ =~ @raw_name)
+      @current ||= (@raw_name =~ CURRENT_BRANCH_REGEX)
     end
 
     def displayable_name(pad:)
