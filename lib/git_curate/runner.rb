@@ -40,44 +40,41 @@ module GitCurate
 
       prompt = " Delete? [y/n/done/abort/help] "
       longest_response = "abort"
-      prompt_and_response_width =
-        if interactive?
-          prompt.length + longest_response.length + 1
-        else
-          0
-        end
+      prompt_and_response_width = (interactive? ? (prompt.length + longest_response.length + 1) : 0)
       table.pack(max_table_width: TTY::Screen.width - prompt_and_response_width)
 
       branches_to_delete = []
 
+      if !interactive?
+        puts table
+        puts table.horizontal_rule
+        return
+      end
+
       table.each_with_index do |row, index|
-        if interactive?
-          case HighLine.ask("#{row}#{prompt}")
-          when "y"
-            branches_to_delete << row.source.proper_name
-          when "n", ""
-            ;  # do nothing
-          when "done"
-            puts table.horizontal_rule
-            finalize(branches_to_delete)
-            exit
-          when "abort"
-            puts table.horizontal_rule
-            puts "#{$/}Aborting. No branches deleted."
-            exit
-          else
-            puts table.horizontal_rule
-            print_help
-            puts table.horizontal_rule unless index == 0
-            redo
-          end
+        case HighLine.ask("#{row}#{prompt}")
+        when "y"
+          branches_to_delete << row.source.proper_name
+        when "n", ""
+          ;  # do nothing
+        when "done"
+          puts table.horizontal_rule
+          finalize(branches_to_delete)
+          exit
+        when "abort"
+          puts table.horizontal_rule
+          puts "#{$/}Aborting. No branches deleted."
+          exit
         else
-          puts row
+          puts table.horizontal_rule
+          print_help
+          puts table.horizontal_rule unless index == 0
+          redo
         end
       end
       puts table.horizontal_rule
 
-      finalize(branches_to_delete) if interactive?
+      finalize(branches_to_delete)
     end
 
     private
