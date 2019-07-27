@@ -79,5 +79,5 @@ License](http://opensource.org/licenses/MIT).
 [Gem Version]: https://rubygems.org/gems/git_curate
 [Build Status]: https://travis-ci.org/matt-harvey/git_curate
 
-[GV img]: https://img.shields.io/gem/v/git_curate.svg?style=plastic
+[GV img]: https://img.shields.io/gem/v/git_curate.svg
 [BS img]: https://img.shields.io/travis/matt-harvey/git_curate.svg
