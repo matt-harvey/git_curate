@@ -2,6 +2,7 @@
 
 [![Gem Version][GV img]][Gem Version]
 [![Build Status][BS img]][Build Status]
+[![Coverage Status][CS img]][Coverage Status]
 
 <img src="https://raw.githubusercontent.com/matt-harvey/git_curate/master/assets/demo2.gif" width="1000" alt="Demo" />
 
@@ -78,6 +79,8 @@ License](http://opensource.org/licenses/MIT).
 
 [Gem Version]: https://rubygems.org/gems/git_curate
 [Build Status]: https://travis-ci.org/matt-harvey/git_curate
+[Coverage Status]: https://coveralls.io/github/matt-harvey/git_curate
 
 [GV img]: https://img.shields.io/gem/v/git_curate.svg
 [BS img]: https://img.shields.io/travis/matt-harvey/git_curate.svg
+[CS img]: https://img.shields.io/coveralls/matt-harvey/git_curate.svg
