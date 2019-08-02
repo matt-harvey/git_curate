@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "tty-screen", "0.7.0"
 
   spec.add_development_dependency "bundler"
+  spec.add_development_dependency "coveralls"
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rake-version", "~> 1.0"
   spec.add_development_dependency "rspec", "~> 3.0"

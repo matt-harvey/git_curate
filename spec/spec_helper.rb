@@ -1,3 +1,6 @@
+require "coveralls"
+Coveralls.wear!
+
 require "simplecov"
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
