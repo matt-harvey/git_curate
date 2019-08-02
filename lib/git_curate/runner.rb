@@ -38,7 +38,7 @@ module GitCurate
         t.add_column("Status vs#{$/}upstream") { |b| upstream_branches.fetch(b.proper_name, "No upstream") }
       end
 
-      prompt = " Delete? [y/n/done/abort/help] "
+      prompt = " Delete? [y/N/done/abort/help] "
       longest_response = "abort"
       prompt_and_response_width = (interactive? ? (prompt.length + longest_response.length + 1) : 0)
       table.pack(max_table_width: TTY::Screen.width - prompt_and_response_width)
@@ -52,7 +52,7 @@ module GitCurate
       end
 
       table.each_with_index do |row, index|
-        case HighLine.ask("#{row}#{prompt}")
+        case HighLine.ask("#{row}#{prompt}").downcase
         when "y"
           branches_to_delete << row.source.proper_name
         when "n", ""
