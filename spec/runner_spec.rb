@@ -17,33 +17,33 @@ describe GitCurate::Runner do
     let(:list) { true }
 
     before(:each) do
-      branch_0 = GitCurate::Branch.new("a-master")
-      allow(branch_0).to receive(:last_commit_date).and_return("2019-03-01")
-      allow(branch_0).to receive(:last_author).and_return("Jane Smithers")
-      allow(branch_0).to receive(:last_subject).and_return("Do some things to the code")
+      @branch_0 = GitCurate::Branch.new("a-master")
+      allow(@branch_0).to receive(:last_commit_date).and_return("2019-03-01")
+      allow(@branch_0).to receive(:last_author).and_return("Jane Smithers")
+      allow(@branch_0).to receive(:last_subject).and_return("Do some things to the code")
 
-      branch_1 = GitCurate::Branch.new("b/other-branch")
-      allow(branch_1).to receive(:last_commit_date).and_return("2019-05-02")
-      allow(branch_1).to receive(:last_author).and_return("John Smith")
-      allow(branch_1).to receive(:last_subject).and_return("Implement that cool feature")
+      @branch_1 = GitCurate::Branch.new("b/other-branch")
+      allow(@branch_1).to receive(:last_commit_date).and_return("2019-05-02")
+      allow(@branch_1).to receive(:last_author).and_return("John Smith")
+      allow(@branch_1).to receive(:last_subject).and_return("Implement that cool feature")
 
-      branch_2 = GitCurate::Branch.new("* c-another-one")
-      allow(branch_2).to receive(:last_commit_date).and_return("2017-11-24")
-      allow(branch_2).to receive(:last_author).and_return("John Smith")
-      allow(branch_2).to receive(:last_subject).and_return("Fix that bug")
+      @branch_2 = GitCurate::Branch.new("* c-another-one")
+      allow(@branch_2).to receive(:last_commit_date).and_return("2017-11-24")
+      allow(@branch_2).to receive(:last_author).and_return("John Smith")
+      allow(@branch_2).to receive(:last_subject).and_return("Fix that bug")
 
-      branch_3 = GitCurate::Branch.new("d-fourth")
-      allow(branch_3).to receive(:last_commit_date).and_return("2017-11-24")
-      allow(branch_3).to receive(:last_author).and_return("John Smith")
-      allow(branch_3).to receive(:last_subject).and_return("Fix that bug")
+      @branch_3 = GitCurate::Branch.new("d-fourth")
+      allow(@branch_3).to receive(:last_commit_date).and_return("2017-11-24")
+      allow(@branch_3).to receive(:last_author).and_return("John Smith")
+      allow(@branch_3).to receive(:last_subject).and_return("Fix that bug")
 
-      branch_4 = GitCurate::Branch.new("e-fifth")
-      allow(branch_4).to receive(:last_commit_date).and_return("2010-08-08")
-      allow(branch_4).to receive(:last_author).and_return("Alicia Keys")
-      allow(branch_4).to receive(:last_subject).and_return("More things")
+      @branch_4 = GitCurate::Branch.new("e-fifth")
+      allow(@branch_4).to receive(:last_commit_date).and_return("2010-08-08")
+      allow(@branch_4).to receive(:last_author).and_return("Alicia Keys")
+      allow(@branch_4).to receive(:last_subject).and_return("More things")
 
-      allow(GitCurate::Branch).to receive(:local).and_return([branch_0, branch_1, branch_2, branch_3, branch_4])
-      allow(GitCurate::Branch).to receive(:local_merged).and_return([branch_2, branch_4])
+      allow(GitCurate::Branch).to receive(:local).and_return([@branch_0, @branch_1, @branch_2, @branch_3, @branch_4])
+      allow(GitCurate::Branch).to receive(:local_merged).and_return([@branch_2, @branch_4])
       allow(GitCurate::Branch).to receive(:upstream_info).and_return({
         "a-master"       => "Up to date",
         "b/other-branch" => "Behind 15",
@@ -73,6 +73,7 @@ describe GitCurate::Runner do
 
     context "when not passed any arguments" do
       let(:args) { [] }
+      before(:each) { allow(GitCurate::Branch).to receive(:delete_multi) }
 
       context "when Runner was initialized with `list: true`" do
         let(:list) { true }
@@ -102,7 +103,67 @@ describe GitCurate::Runner do
         end
       end
 
-      pending "when Runner was initialized with `list: false`" # FIXME
+      context "when Runner was initialized with `list: false`" do
+        let(:list) { false }
+        let(:user_responses) { ["y", "", "N", "Y"] }
+        before(:each) { allow(HighLine).to receive(:ask).and_return(*user_responses) }
+
+        it "prompts the user once for each branch other than the current one, continuing if the user enters a y/Y/n/N/<blank>" do
+          expect(HighLine).to receive(:ask).exactly(4).times
+          subject
+        end
+
+        it "deletes each branch for which the user enters 'y' or 'Y'" do
+          expect(GitCurate::Branch).to receive(:delete_multi).with(@branch_0, @branch_4)
+          subject
+        end
+
+        context "when the user enters 'abort'" do
+          let(:user_responses) { ["y", "Y", "abort"] }
+
+          it "exits early" do
+            expect(HighLine).to receive(:ask).exactly(3).times
+            subject
+          end
+
+          it "does not delete any branches" do
+            expect(GitCurate::Branch).not_to receive(:delete_multi)
+            subject
+          end
+        end
+
+        context "when the user enters 'done'" do
+          let(:user_responses) { ["y", "", "done"] }
+
+          it "exits early" do
+            expect(HighLine).to receive(:ask).exactly(3).times
+            subject
+          end
+
+          it "deletes the branches that the user has selected for deletion using 'y'/'Y'" do
+            expect(GitCurate::Branch).to receive(:delete_multi).with(@branch_0)
+            subject
+          end
+        end
+
+        context "when the user enters 'help'" do
+          let(:user_responses) { ["n", "help", "n", "n"] }
+
+          it "outputs help text" do
+            expected_help_text = <<-EOL
+  Simply hit <Enter> to keep this branch and skip to the next one;
+  or enter one of the following commands:
+    y      -- mark branch for deletion
+    n      -- keep branch (equivalent to just <Enter>)
+    done   -- delete selected branches and exit session
+    abort  -- abort without deleting any branches
+    help   -- print this help message
+  EOL
+            expect($stdout).to receive(:puts).with(expected_help_text)
+            subject
+          end
+        end
+      end
     end
 
   end
