@@ -1,20 +1,5 @@
 #!/usr/bin/env ruby
 
 require "git_curate"
-require "optparse"
 
-def main
-  parser = GitCurate::CLIParser.new
-  continue = parser.parse(ARGV)
-  return unless continue
-
-  runner = GitCurate::Runner.new(parser.parsed_options)
-  exit_code = runner.run(ARGV)
-  exit(exit_code)
-rescue OptionParser::InvalidOption
-  puts "Unrecognized option"
-  puts 'For help, enter `git curate -h`'
-  exit(1)
-end
-
-main
+exit(GitCurate::App.main)
