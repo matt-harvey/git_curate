@@ -49,17 +49,17 @@ module GitCurate
       table.each_with_index do |row, index|
         case HighLine.ask("#{row}#{prompt}").downcase
         when "y"
-          branches_to_delete << row.source.proper_name
+          branches_to_delete << row.source
         when "n", ""
           ;  # do nothing
         when "done"
           puts table.horizontal_rule
           finalize(branches_to_delete)
-          exit
+          return 0
         when "abort"
           puts table.horizontal_rule
           puts "#{$/}Aborting. No branches deleted."
-          exit
+          return 0
         else
           puts table.horizontal_rule
           print_help
@@ -82,7 +82,7 @@ module GitCurate
     def finalize(branches_to_delete)
       if branches_to_delete.size != 0
         puts
-        system("git branch -D #{branches_to_delete.join(" ")} --")
+        puts Branch.delete_multi(*branches_to_delete)
         puts "#{$/}Done"
       else
         puts "#{$/}No branches deleted."

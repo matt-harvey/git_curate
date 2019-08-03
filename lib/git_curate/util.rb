@@ -11,10 +11,17 @@ module GitCurate
     end
 
     # Runs the passed string as a system command and returns its output.
+    # If the command doesn't exit with 0 (success), then an error will be thrown, with the error
+    # output as its message.
     def self.command_output(command)
-      Open3.capture2(command).first
-    end
+      stdout_str, stderr_str, status = Open3.capture3(command)
 
+      if status.exitstatus != 0
+        raise RuntimeError.new(stderr_str)
+      end
+
+      stdout_str
+    end
   end
 
 end

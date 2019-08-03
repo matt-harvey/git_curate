@@ -1,5 +1,4 @@
 require "spec_helper"
-require "open3"
 
 describe GitCurate::Branch do
 
@@ -83,7 +82,7 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --format=format:%an` with the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
       command = "git log -n1 --format=format:%an feature/something --"
-      allow(Open3).to receive(:capture2).with(command).and_return(["John Smith <js@example.com>", nil])
+      allow(GitCurate::Util).to receive(:command_output).with(command).and_return("John Smith <js@example.com>")
       expect(branch.last_author).to eq("John Smith <js@example.com>")
     end
   end
@@ -93,7 +92,7 @@ describe GitCurate::Branch do
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
       command = "git log -n1 --date=short --format=format:%cd feature/something --"
-      allow(Open3).to receive(:capture2).with(command).and_return(["2019-07-08", nil])
+      allow(GitCurate::Util).to receive(:command_output).with(command).and_return("2019-07-08")
       expect(branch.last_commit_date).to eq("2019-07-08")
     end
   end
@@ -103,7 +102,7 @@ describe GitCurate::Branch do
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("fix/everything")
       command = "git log -n1 --format=format:%s fix/everything --"
-      allow(Open3).to receive(:capture2).with(command).and_return(["Fix all the things", nil])
+      allow(GitCurate::Util).to receive(:command_output).with(command).and_return("Fix all the things")
       expect(branch.last_subject).to eq("Fix all the things")
     end
   end
@@ -111,7 +110,7 @@ describe GitCurate::Branch do
   describe ".local" do
     it "returns an array of all the local branches" do
       command = "git branch"
-      allow(Open3).to receive(:capture2).with(command).and_return(["* some-branch#{$/}  an/other-branch#{$/}  third", nil])
+      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return(["* some-branch", "an/other-branch", "third"])
       expected = ["* some-branch", "an/other-branch", "third"]
       expect(GitCurate::Branch.local.map(&:raw_name)).to eq(expected)
     end
@@ -120,7 +119,7 @@ describe GitCurate::Branch do
   describe ".local_merged" do
     it "returns an array of all the local branches" do
       command = "git branch --merged"
-      allow(Open3).to receive(:capture2).with(command).and_return(["  an/other-branch#{$/}  hey#{$/}", nil])
+      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return(["an/other-branch", "hey"])
       expected = ["an/other-branch", "hey"]
       expect(GitCurate::Branch.local_merged.map(&:raw_name)).to eq(expected)
     end
@@ -129,15 +128,15 @@ describe GitCurate::Branch do
   describe ".upstream_info" do
     it "returns a Hash mapping proper names of local branches to info abuot their status relative to their upstream branches" do
       command = "git branch -vv"
-      command_output = <<EOF
-* master      5ec7d75 [origin/master] Note untested on Windows
-  one-command 8827957 WIP... One entry moves
-  release     5ec7d75 Note untested on Windows
-  something   6ef7375 [origin/something: behind 15] Words etc
-  yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc
-  save        a49ea12 [origin/save: ahead 1, behind 2] Save board to disk after each move
-EOF
-      allow(Open3).to receive(:capture2).with(command).and_return([command_output, nil])
+      output_lines = [
+        "* master      5ec7d75 [origin/master] Note untested on Windows",
+        "one-command 8827957 WIP... One entry moves",
+        "release     5ec7d75 Note untested on Windows",
+        "something   6ef7375 [origin/something: behind 15] Words etc",
+        "yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc",
+        "save        a49ea12 [origin/save: ahead 1, behind 2] Save board to disk after each move",
+      ]
+      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return(output_lines)
       expect(GitCurate::Branch.upstream_info).to eq({
         "master"     => "Up to date",
         "something"  => "Behind 15",
@@ -145,7 +144,16 @@ EOF
         "save"       => "Ahead 1, behind 2",
       })
     end
+  end
 
+  describe ".delete_multi" do
+    it "deletes each of the passed branches by passing their proper names to the `git branch -D` system command" do
+      branch_0 = GitCurate::Branch.new("some-branch")
+      branch_1 = GitCurate::Branch.new("* some-other-branch")
+      allow(GitCurate::Util).to receive(:command_output)
+      expect(GitCurate::Util).to receive(:command_output).with("git branch -D some-branch some-other-branch --")
+      GitCurate::Branch.delete_multi(branch_0, branch_1)
+    end
   end
 
 end

@@ -77,6 +77,10 @@ module GitCurate
       end.compact.to_h
     end
 
+    def self.delete_multi(*branches)
+      Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
+    end
+
     private
 
     def self.command_to_branches(command)
