@@ -1,5 +1,12 @@
 # Changelog
 
+### v0.7.0
+
+* Show "no" option as capital "N", to hint that it's the default
+* Get user input case-insensitively
+* More unit tests
+* Build status and coverage badges added to README
+
 ### v0.6.4
 
 * Fix breakage on Ruby <= 2.3 due to unsupported Regex #match? method.
