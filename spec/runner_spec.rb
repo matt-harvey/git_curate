@@ -118,6 +118,10 @@ describe GitCurate::Runner do
           subject
         end
 
+        it "returns a status code of 0" do
+          is_expected.to eq(0)
+        end
+
         context "when the user enters 'abort'" do
           let(:user_responses) { ["y", "Y", "abort"] }
 
@@ -129,6 +133,10 @@ describe GitCurate::Runner do
           it "does not delete any branches" do
             expect(GitCurate::Branch).not_to receive(:delete_multi)
             subject
+          end
+
+          it "returns a status code of 0" do
+            is_expected.to eq(0)
           end
         end
 
@@ -143,6 +151,10 @@ describe GitCurate::Runner do
           it "deletes the branches that the user has selected for deletion using 'y'/'Y'" do
             expect(GitCurate::Branch).to receive(:delete_multi).with(@branch_0)
             subject
+          end
+
+          it "returns a status code of 0" do
+            is_expected.to eq(0)
           end
         end
 
