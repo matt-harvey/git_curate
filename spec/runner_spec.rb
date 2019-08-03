@@ -101,6 +101,8 @@ describe GitCurate::Runner do
           is_expected.to eq(0)
         end
       end
+
+      pending "when Runner was initialized with `list: false`" # FIXME
     end
 
   end

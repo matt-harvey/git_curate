@@ -5,6 +5,9 @@ require "tty-screen"
 
 module GitCurate
 
+  EXIT_SUCCESS = 0
+  EXIT_FAILURE = 1
+
   class Runner
 
     def initialize(opts)
@@ -14,7 +17,7 @@ module GitCurate
     def run(args)
       if args.length != 0
         $stderr.puts "This script does not accept any arguments."
-        return 1
+        return EXIT_FAILURE
       end
 
       branches = Branch.local
@@ -43,7 +46,7 @@ module GitCurate
 
       if !interactive?
         puts "#{table}#{$/}#{table.horizontal_rule}"
-        return 0
+        return EXIT_SUCCESS
       end
 
       table.each_with_index do |row, index|
@@ -55,11 +58,11 @@ module GitCurate
         when "done"
           puts table.horizontal_rule
           finalize(branches_to_delete)
-          return 0
+          return EXIT_SUCCESS
         when "abort"
           puts table.horizontal_rule
           puts "#{$/}Aborting. No branches deleted."
-          return 0
+          return EXIT_SUCCESS
         else
           puts table.horizontal_rule
           print_help
@@ -70,7 +73,7 @@ module GitCurate
       puts table.horizontal_rule
 
       finalize(branches_to_delete)
-      return 0
+      return EXIT_SUCCESS
     end
 
     private
