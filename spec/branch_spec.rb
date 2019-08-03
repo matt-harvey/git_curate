@@ -107,4 +107,45 @@ describe GitCurate::Branch do
       expect(branch.last_subject).to eq("Fix all the things")
     end
   end
+
+  describe ".local" do
+    it "returns an array of all the local branches" do
+      command = "git branch"
+      allow(Open3).to receive(:capture2).with(command).and_return(["* some-branch#{$/}  an/other-branch#{$/}  third", nil])
+      expected = ["* some-branch", "an/other-branch", "third"]
+      expect(GitCurate::Branch.local.map(&:raw_name)).to eq(expected)
+    end
+  end
+
+  describe ".local_merged" do
+    it "returns an array of all the local branches" do
+      command = "git branch --merged"
+      allow(Open3).to receive(:capture2).with(command).and_return(["  an/other-branch#{$/}  hey#{$/}", nil])
+      expected = ["an/other-branch", "hey"]
+      expect(GitCurate::Branch.local_merged.map(&:raw_name)).to eq(expected)
+    end
+  end
+
+  describe ".upstream_info" do
+    it "returns a Hash mapping proper names of local branches to info abuot their status relative to their upstream branches" do
+      command = "git branch -vv"
+      command_output = <<EOF
+* master      5ec7d75 [origin/master] Note untested on Windows
+  one-command 8827957 WIP... One entry moves
+  release     5ec7d75 Note untested on Windows
+  something   6ef7375 [origin/something: behind 15] Words etc
+  yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc
+  save        a49ea12 [origin/save: ahead 1, behind 2] Save board to disk after each move
+EOF
+      allow(Open3).to receive(:capture2).with(command).and_return([command_output, nil])
+      expect(GitCurate::Branch.upstream_info).to eq({
+        "master"     => "Up to date",
+        "something"  => "Behind 15",
+        "yeah-thing" => "Ahead 2",
+        "save"       => "Ahead 1, behind 2",
+      })
+    end
+
+  end
+
 end
