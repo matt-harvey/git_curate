@@ -1,5 +1,11 @@
 # Changelog
 
+### v0.7.1
+
+* Fix errors on -h, -v and --version options due to incorrect exit code handling
+* Fix error when branch name is the same as the name of a filepath
+* Get test coverage to 100%
+
 ### v0.7.0
 
 * Show "no" option as capital "N", to hint that it's the default
