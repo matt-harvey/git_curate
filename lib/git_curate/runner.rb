@@ -11,10 +11,10 @@ module GitCurate
       @opts = opts
     end
 
-    def run
-      if ARGV.length != 0
-        puts "This script does not accept any arguments."
-        exit
+    def run(args)
+      if args.length != 0
+        $stderr.puts "This script does not accept any arguments."
+        return 1
       end
 
       branches = Branch.local
@@ -36,14 +36,14 @@ module GitCurate
       prompt = " Delete? [y/N/done/abort/help] "
       longest_response = "abort"
       prompt_and_response_width = (interactive? ? (prompt.length + longest_response.length + 1) : 0)
-      table.pack(max_table_width: TTY::Screen.width - prompt_and_response_width)
+      max_table_width = TTY::Screen.width - prompt_and_response_width
+      table.pack(max_table_width: max_table_width)
 
       branches_to_delete = []
 
       if !interactive?
-        puts table
-        puts table.horizontal_rule
-        return
+        puts "#{table}#{$/}#{table.horizontal_rule}"
+        return 0
       end
 
       table.each_with_index do |row, index|
@@ -70,6 +70,7 @@ module GitCurate
       puts table.horizontal_rule
 
       finalize(branches_to_delete)
+      return 0
     end
 
     private

@@ -15,7 +15,7 @@ describe GitCurate::Branch do
   describe "#proper_name" do
     it "returns the @raw_name, sans any leading whitespace, sans any leading '* '" do
       {
-        "some-branch"            =>  "some-branch",
+        "some-branch"            => "some-branch",
         "  \t some-other-branch" => "some-other-branch",
         "  * another-one"        => "another-one",
         "* and-this-one"         => "and-this-one",

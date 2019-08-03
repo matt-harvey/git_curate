@@ -9,7 +9,7 @@ def main
   return unless continue
 
   runner = GitCurate::Runner.new(parser.parsed_options)
-  runner.run
+  exit(runner.run(ARGV))
 rescue OptionParser::InvalidOption
   puts "Unrecognized option"
   puts 'For help, enter `git curate -h`'
