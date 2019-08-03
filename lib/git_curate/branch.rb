@@ -34,15 +34,15 @@ module GitCurate
     end
 
     def last_author
-      Util.command_output("git log -n1 --format=format:%an #{proper_name}")
+      Util.command_output("git log -n1 --format=format:%an #{proper_name} --")
     end
 
     def last_commit_date
-      Util.command_output("git log -n1 --date=short --format=format:%cd #{proper_name}")
+      Util.command_output("git log -n1 --date=short --format=format:%cd #{proper_name} --")
     end
 
     def last_subject
-      Util.command_output("git log -n1 --format=format:%s #{proper_name}")
+      Util.command_output("git log -n1 --format=format:%s #{proper_name} --")
     end
 
     # Returns the local branches

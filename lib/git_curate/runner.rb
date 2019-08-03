@@ -82,7 +82,7 @@ module GitCurate
     def finalize(branches_to_delete)
       if branches_to_delete.size != 0
         puts
-        system("git branch -D #{branches_to_delete.join(" ")}")
+        system("git branch -D #{branches_to_delete.join(" ")} --")
         puts "#{$/}Done"
       else
         puts "#{$/}No branches deleted."

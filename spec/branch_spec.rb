@@ -82,7 +82,7 @@ describe GitCurate::Branch do
   describe "#last_author" do
     it "returns the output from calling `git log -n1 --format=format:%an` with the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
-      command = "git log -n1 --format=format:%an feature/something"
+      command = "git log -n1 --format=format:%an feature/something --"
       allow(Open3).to receive(:capture2).with(command).and_return(["John Smith <js@example.com>", nil])
       expect(branch.last_author).to eq("John Smith <js@example.com>")
     end
@@ -92,7 +92,7 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --date=short --format=format:%cd` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
-      command = "git log -n1 --date=short --format=format:%cd feature/something"
+      command = "git log -n1 --date=short --format=format:%cd feature/something --"
       allow(Open3).to receive(:capture2).with(command).and_return(["2019-07-08", nil])
       expect(branch.last_commit_date).to eq("2019-07-08")
     end
@@ -102,7 +102,7 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --format=format:%s` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("fix/everything")
-      command = "git log -n1 --format=format:%s fix/everything"
+      command = "git log -n1 --format=format:%s fix/everything --"
       allow(Open3).to receive(:capture2).with(command).and_return(["Fix all the things", nil])
       expect(branch.last_subject).to eq("Fix all the things")
     end
