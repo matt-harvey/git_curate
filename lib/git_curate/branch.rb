@@ -94,9 +94,8 @@ module GitCurate
     def initialize_last_commit_data
       return if @last_commit_data
 
-      @last_commit_date, @last_author, @last_subject = Util.command_output(
-        "git log -n1 --date=short --format=format:'%cd%n%an%n%s' #{proper_name} --"
-      ).split($/)
+      command = "git log -n1 --date=short --format=format:'%cd%n%an%n%s' #{proper_name} --"
+      @last_commit_date, @last_author, @last_subject = Util.command_to_a(command)
     end
 
   end
