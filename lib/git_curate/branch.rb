@@ -33,16 +33,19 @@ module GitCurate
       end
     end
 
-    def last_author
-      Util.command_output("git log -n1 --format=format:%an #{proper_name} --")
+    def last_commit_date
+      initialize_last_commit_data
+      @last_commit_date
     end
 
-    def last_commit_date
-      Util.command_output("git log -n1 --date=short --format=format:%cd #{proper_name} --")
+    def last_author
+      initialize_last_commit_data
+      @last_author
     end
 
     def last_subject
-      Util.command_output("git log -n1 --format=format:%s #{proper_name} --")
+      initialize_last_commit_data
+      @last_subject
     end
 
     # Returns the local branches
@@ -85,6 +88,15 @@ module GitCurate
 
     def self.command_to_branches(command)
       Util.command_to_a(command).map { |raw_branch_name| self.new(raw_branch_name) }
+    end
+
+    # Returns an array with [date, author, subject], each as a string.
+    def initialize_last_commit_data
+      return if @last_commit_data
+
+      @last_commit_date, @last_author, @last_subject = Util.command_output(
+        "git log -n1 --date=short --format=format:'%cd%n%an%n%s' #{proper_name} --"
+      ).split($/)
     end
 
   end
