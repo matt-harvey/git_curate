@@ -22,7 +22,6 @@ module GitCurate
 
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
-      merged_branch_names = Branch.local_merged.map(&:proper_name).to_set
       upstream_branches = Branch.upstream_info
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
@@ -32,7 +31,7 @@ module GitCurate
         t.add_column("Last commit", &:last_commit_date)
         t.add_column("Last author", &:last_author)
         t.add_column("Last subject", &:last_subject)
-        t.add_column("Merged#{$/}into HEAD?") { |b| merged_branch_names.include?(b.proper_name) ? "Merged" : "Not merged" }
+        t.add_column("Merged#{$/}into HEAD?") { |b| b.merged? ? "Merged" : "Not merged" }
         t.add_column("Status vs#{$/}upstream") { |b| upstream_branches.fetch(b.proper_name, "No upstream") }
       end
 

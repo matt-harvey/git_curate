@@ -12,17 +12,16 @@ module GitCurate
 
     attr_reader :raw_name
 
-    # raw_name should start in "* " if the current branch, but should otherwise have not whitespace.
-    def initialize(raw_name)
-      @raw_name = raw_name
-    end
-
     def proper_name
       @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
     end
 
     def current?
       @current ||= (@raw_name =~ CURRENT_BRANCH_REGEX)
+    end
+
+    def merged?
+      @merged
     end
 
     def displayable_name(pad:)
@@ -50,12 +49,10 @@ module GitCurate
 
     # Returns the local branches
     def self.local
-      command_to_branches("git branch")
-    end
-
-    # Returns local branches that are merged into current HEAD
-    def self.local_merged
-      command_to_branches("git branch --merged")
+      merged_branch_raw_names = Util.command_to_a("git branch --merged").to_set
+      Util.command_to_a("git branch").map do |raw_name|
+        new(raw_name, merged: merged_branch_raw_names.include?(raw_name))
+      end
     end
 
     # Returns a Hash containing, as keys, the proper names of all local branches that have upstream branches,
@@ -86,8 +83,10 @@ module GitCurate
 
     private
 
-    def self.command_to_branches(command)
-      Util.command_to_a(command).map { |raw_branch_name| self.new(raw_branch_name) }
+    # raw_name should start in "* " if the current branch, but should otherwise have not whitespace.
+    def initialize(raw_name, merged:)
+      @raw_name = raw_name
+      @merged = merged
     end
 
     # Returns an array with [date, author, subject], each as a string.
