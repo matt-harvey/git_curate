@@ -17,37 +17,32 @@ describe GitCurate::Runner do
     let(:list) { true }
 
     before(:each) do
-      @branch_0 = GitCurate::Branch.new("a-master", merged: false)
+      @branch_0 = GitCurate::Branch.new("a-master", merged: false, upstream_info: "Up to date")
       allow(@branch_0).to receive(:last_commit_date).and_return("2019-03-01")
       allow(@branch_0).to receive(:last_author).and_return("Jane Smithers")
       allow(@branch_0).to receive(:last_subject).and_return("Do some things to the code")
 
-      @branch_1 = GitCurate::Branch.new("b/other-branch", merged: false)
+      @branch_1 = GitCurate::Branch.new("b/other-branch", merged: false, upstream_info: "Behind 15")
       allow(@branch_1).to receive(:last_commit_date).and_return("2019-05-02")
       allow(@branch_1).to receive(:last_author).and_return("John Smith")
       allow(@branch_1).to receive(:last_subject).and_return("Implement that cool feature")
 
-      @branch_2 = GitCurate::Branch.new("* c-another-one", merged: true)
+      @branch_2 = GitCurate::Branch.new("* c-another-one", merged: true, upstream_info: "No upstream")
       allow(@branch_2).to receive(:last_commit_date).and_return("2017-11-24")
       allow(@branch_2).to receive(:last_author).and_return("John Smith")
       allow(@branch_2).to receive(:last_subject).and_return("Fix that bug")
 
-      @branch_3 = GitCurate::Branch.new("d-fourth", merged: false)
+      @branch_3 = GitCurate::Branch.new("d-fourth", merged: false, upstream_info: "No upstream")
       allow(@branch_3).to receive(:last_commit_date).and_return("2017-11-24")
       allow(@branch_3).to receive(:last_author).and_return("John Smith")
       allow(@branch_3).to receive(:last_subject).and_return("Fix that bug")
 
-      @branch_4 = GitCurate::Branch.new("e-fifth", merged: true)
+      @branch_4 = GitCurate::Branch.new("e-fifth", merged: true, upstream_info: "Ahead 1, behind 2")
       allow(@branch_4).to receive(:last_commit_date).and_return("2010-08-08")
       allow(@branch_4).to receive(:last_author).and_return("Alicia Keys")
       allow(@branch_4).to receive(:last_subject).and_return("More things")
 
       allow(GitCurate::Branch).to receive(:local).and_return([@branch_0, @branch_1, @branch_2, @branch_3, @branch_4])
-      allow(GitCurate::Branch).to receive(:upstream_info).and_return({
-        "a-master"       => "Up to date",
-        "b/other-branch" => "Behind 15",
-        "e-fifth"        => "Ahead 1, behind 2",
-      })
       allow(TTY::Screen).to receive(:width).and_return(200)
       allow($stdout).to receive(:puts) { |output| @captured_output = output }
     end

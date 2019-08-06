@@ -11,6 +11,7 @@ module GitCurate
     REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
 
     attr_reader :raw_name
+    attr_reader :upstream_info
 
     def proper_name
       @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
@@ -50,43 +51,44 @@ module GitCurate
     # Returns the local branches
     def self.local
       merged_branch_raw_names = Util.command_to_a("git branch --merged").to_set
-      Util.command_to_a("git branch").map do |raw_name|
-        new(raw_name, merged: merged_branch_raw_names.include?(raw_name))
+
+      branch_info.map do |raw_name, info|
+        new(raw_name, merged: merged_branch_raw_names.include?(raw_name), upstream_info: info)
       end
     end
 
-    # Returns a Hash containing, as keys, the proper names of all local branches that have upstream branches,
-    # and, as values, a brief description of each branch's status relative to its upstream
-    # branch (up to date, or ahead/behind)
-    def self.upstream_info
+    private
+
+    # Returns a Hash containing, as keys, the raw names of all local branches and, as values,
+    # a brief description of each branch's status relative to its upstream branch (up to
+    # date, or ahead/behind).
+    def self.branch_info
       Util.command_to_a("git branch -vv").map do |line|
-        line.gsub!(LEADING_STAR_REGEX, "")
-        branch_name = line.split(BRANCH_NAME_REGEX)[0]
-        remote_info = line[REMOTE_INFO_REGEX, 1]
-        if remote_info.nil?
-          nil
-        else
-          comparison_raw = remote_info.split(":")
-          comparison = if comparison_raw.length < 2
-                         "Up to date"
-                       else
-                         comparison_raw[1].strip.capitalize
-                       end
-          [branch_name, comparison]
-        end
-      end.compact.to_h
+        line_is_current_branch = (line =~ LEADING_STAR_REGEX)
+        tidied_line = (line_is_current_branch ? line.gsub(LEADING_STAR_REGEX, "") : line)
+        proper_branch_name = tidied_line.split(BRANCH_NAME_REGEX)[0]
+        raw_branch_name = (line_is_current_branch ? "* #{proper_branch_name}" : proper_branch_name)
+        remote_info = tidied_line[REMOTE_INFO_REGEX, 1]
+        upstream_info =
+          if remote_info.nil?
+            "No upstream"
+          else
+            comparison_raw = remote_info.split(":")
+            comparison_raw.length < 2 ? "Up to date" : comparison_raw[1].strip.capitalize
+          end
+        [raw_branch_name, upstream_info]
+      end.to_h
     end
 
     def self.delete_multi(*branches)
       Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
     end
 
-    private
-
     # raw_name should start in "* " if the current branch, but should otherwise have not whitespace.
-    def initialize(raw_name, merged:)
+    def initialize(raw_name, merged:, upstream_info:)
       @raw_name = raw_name
       @merged = merged
+      @upstream_info = upstream_info
     end
 
     # Returns an array with [date, author, subject], each as a string.

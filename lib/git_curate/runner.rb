@@ -22,7 +22,6 @@ module GitCurate
 
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
-      upstream_branches = Branch.upstream_info
 
       table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
         horizontal_rule_character: "-", column_padding: 0, align_header: :left) do |t|
@@ -32,7 +31,7 @@ module GitCurate
         t.add_column("Last author", &:last_author)
         t.add_column("Last subject", &:last_subject)
         t.add_column("Merged#{$/}into HEAD?") { |b| b.merged? ? "Merged" : "Not merged" }
-        t.add_column("Status vs#{$/}upstream") { |b| upstream_branches.fetch(b.proper_name, "No upstream") }
+        t.add_column("Status vs#{$/}upstream", &:upstream_info)
       end
 
       prompt = " Delete? [y/N/done/abort/help] "
