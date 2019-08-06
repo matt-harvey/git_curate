@@ -81,7 +81,7 @@ describe GitCurate::Branch do
   describe "#last_author" do
     it "returns the output from calling `git log -n1 --format=format:%an` with the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
-      command = "git log -n1 --date=short --format=format:'%cd%n%an%n%s' feature/something --"
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
@@ -95,7 +95,7 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --date=short --format=format:%cd` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
-      command = "git log -n1 --date=short --format=format:'%cd%n%an%n%s' feature/something --"
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
@@ -109,7 +109,7 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --format=format:%s` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something")
-      command = "git log -n1 --date=short --format=format:'%cd%n%an%n%s' feature/something --"
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
@@ -122,7 +122,10 @@ describe GitCurate::Branch do
   describe ".local" do
     it "returns an array of all the local branches" do
       command = "git branch"
-      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return(["* some-branch", "an/other-branch", "third"])
+      allow(GitCurate::Util).to \
+        receive(:command_to_a).
+        with(command).
+        and_return(["* some-branch", "an/other-branch", "third"])
       expected = ["* some-branch", "an/other-branch", "third"]
       expect(GitCurate::Branch.local.map(&:raw_name)).to eq(expected)
     end

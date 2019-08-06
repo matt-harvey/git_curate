@@ -94,8 +94,11 @@ module GitCurate
     def initialize_last_commit_data
       return if @last_commit_data
 
-      command = "git log -n1 --date=short --format=format:'%cd%n%an%n%s' #{proper_name} --"
+      # For Windows compatibility we need double quotes around the format string, as well as spaces
+      # between the placeholders.
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" #{proper_name} --)
       @last_commit_data = Util.command_to_a(command)
+
       @last_commit_date, @last_author, @last_subject = @last_commit_data
     end
 
