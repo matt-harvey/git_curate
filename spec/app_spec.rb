@@ -53,15 +53,32 @@ describe GitCurate::App do
 
     context "when the parser returns true, indicating valid CLI args, and that the program should continue" do
       let(:continue_past_parser) { true }
-      before(:each) { allow(parser).to receive(:parsed_options).and_return({ list: true }) }
+      let(:runner) { double("runner") }
+      before(:each) do
+        allow(parser).to receive(:parsed_options).and_return({ list: true })
+        allow(GitCurate::Runner).to receive(:new).and_return(runner)
+      end
 
       it "proceeds to process the git branches with a Runner instance, passing the runner the parsed options" do
-        runner = double("runner")
-        allow(GitCurate::Runner).to receive(:new).and_return(runner)
         allow(runner).to receive(:run)
         expect(GitCurate::Runner).to receive(:new).with(list: true)
         expect(runner).to receive(:run)
         subject
+      end
+
+      context "when a system call error is thrown by the application Runner" do
+        before(:each) do
+          allow(runner).to receive(:run).and_raise(GitCurate::SystemCommandError.new("woops", 1))
+        end
+
+        it "returns the exit status captured in the SystemCommandError" do
+          is_expected.to eq(1)
+        end
+
+        it "prints the error message captured in the SystemCommandError to STDERR" do
+          expect($stderr).to receive(:puts).with("woops")
+          subject
+        end
       end
     end
 

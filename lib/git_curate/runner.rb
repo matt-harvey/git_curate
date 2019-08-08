@@ -5,9 +5,6 @@ require "tty-screen"
 
 module GitCurate
 
-  EXIT_SUCCESS = 0
-  EXIT_FAILURE = 1
-
   class Runner
 
     def initialize(opts)
