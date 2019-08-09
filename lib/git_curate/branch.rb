@@ -32,8 +32,11 @@ module GitCurate
       @merged
     end
 
-    # Returns the branch's name, with a prefix of "* " if it's the currently checked out branch, or else a prefix
-    # of "  ". Branch displayable names are designed to be aligned with each other for display in a vertical column.
+    # Returns the branch's name, with a prefix of "* ", if it's the currently checked out branch, or, if it's not
+    # the currently checked out branch, either a prefix of "  " (if `pad:` receives truthy) or no prefix (if `pad:`
+    # received falsey). Branch displayable names are designed to be aligned with each other for display in a vertical
+    # column. `pad:` should generally be passed `false` if the caller knows that the current branch won't be in the
+    # list of displayed branches.
     def displayable_name(pad:)
       if pad && !current?
         "  #{@raw_name}"
