@@ -10,21 +10,30 @@ module GitCurate
     LEADING_STAR_REGEX = /^\* /
     REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
 
+    # Returns the branch name, with "* " prefixed if it's the current branch.
     attr_reader :raw_name
+
+    # Returns a human-friendly string describing the status of the branch relative to the upstream branch
+    # it's tracking, if any.
     attr_reader :upstream_info
 
+    # Returns simply the name of the branch, without any other "decoration".
     def proper_name
       @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
     end
 
+    # Returns truthy if and only if this is the currently checked out branch.
     def current?
       @current ||= (@raw_name =~ CURRENT_BRANCH_REGEX)
     end
 
+    # Return truthy if and only if this branch has been merged into the current HEAD.
     def merged?
       @merged
     end
 
+    # Returns the branch's name, with a prefix of "* " if it's the currently checked out branch, or else a prefix
+    # of "  ". Branch displayable names are designed to be aligned with each other for display in a vertical column.
     def displayable_name(pad:)
       if pad && !current?
         "  #{@raw_name}"

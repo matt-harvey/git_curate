@@ -5,12 +5,21 @@ require "tty-screen"
 
 module GitCurate
 
+  # Contains the main logic of the application.
   class Runner
 
+    # Accepts a Hash of options passed from the parsed command line. Currently there is only one option, :list,
+    # which is treated as a boolean, and determines whether the branches will simply be listed non-interactively
+    # (list: true), or interactively with opportunities for the user to select branches for deletion (list: false).
     def initialize(opts)
       @opts = opts
     end
 
+    # Runs the application, listing branches either interactively or non-interactively. Returns an exit status,
+    # suitable for passing to `exit()`.
+    # `args` should be passed an array of non-option/non-flag arguments received from the command
+    # line. If this array is of inappropriate length, EXIT_FAILURE will be returned. (The
+    # appropriate length may be 0.)
     def run(args)
       if args.length != 0
         $stderr.puts "This script does not accept any arguments."

@@ -10,8 +10,10 @@ module GitCurate
       @parsed_options = {}
     end
 
-    # Sets @parsed_options according to the options received, and return truthy
-    # if and only if the program should continue after the options are passed.
+    # Sets @parsed_options according to the options received, and return truthy if and only if the program should
+    # continue after the options are passed. Usually this method should be passed ARGV. Any elements of `options` that
+    # are not processed by this method, will remain in `options`; elements that are processed, will be destructively
+    # removed from `options`.
     def parse(options)
       opt_parser = OptionParser.new do |opts|
         opts.banner = <<-EOF

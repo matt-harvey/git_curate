@@ -12,6 +12,7 @@ module GitCurate
       return EXIT_SUCCESS unless continue
 
       runner = GitCurate::Runner.new(parser.parsed_options)
+      # Args not parsed by the CLIParser are passed to Runner.
       runner.run(ARGV)
     rescue SystemCommandError => error
       $stderr.puts(error.message)
