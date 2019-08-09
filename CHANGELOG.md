@@ -1,5 +1,13 @@
 # Changelog
 
+### v0.7.2
+
+* Nicer error messages; for example, if `git curate` is run outside of a git repo, the user will now see
+  the same error message as they would see from running `git branch` (as opposed to seeing an unsightly stack trace)
+* Performance improvements: it now runs faster, as the number of system calls made by the
+  application is reduced
+* Improvements to code structure and internal documentation
+
 ### v0.7.1
 
 * Fix errors on -h, -v and --version options due to incorrect exit code handling
