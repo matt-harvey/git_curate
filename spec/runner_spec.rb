@@ -44,7 +44,7 @@ describe GitCurate::Runner do
 
       allow(GitCurate::Branch).to receive(:local).and_return([@branch_0, @branch_1, @branch_2, @branch_3, @branch_4])
       allow(TTY::Screen).to receive(:width).and_return(200)
-      allow($stdout).to receive(:puts) { |output| @captured_output = output }
+      allow($stdout).to receive(:puts) { |output| @captured_output = output.to_s }
     end
 
     after(:each) do
@@ -75,16 +75,16 @@ describe GitCurate::Runner do
         it "outputs a list of branch information" do
           # Doing it like this to stop text editor automatically deleting trailing whitespace
           expected_output = [
-" ---------------- ----------- ------------- --------------------------- ---------- ----------------- ",
-" Branch           Last commit Last author   Last subject                Merged     Status vs         ",
-"                                                                        into HEAD? upstream          ",
-" ---------------- ----------- ------------- --------------------------- ---------- ----------------- ",
-"   a-master       2019-03-01  Jane Smithers Do some things to the code  Not merged Up to date        ",
-"   b/other-branch 2019-05-02  John Smith    Implement that cool feature Not merged Behind 15         ",
-" * c-another-one  2017-11-24  John Smith    Fix that bug                Merged     No upstream       ",
-"   d-fourth       2017-11-24  John Smith    Fix that bug                Not merged No upstream       ",
-"   e-fifth        2010-08-08  Alicia Keys   More things                 Merged     Ahead 1, behind 2 ",
-" ---------------- ----------- ------------- --------------------------- ---------- ----------------- ",
+"---------------- ----------- ------------- --------------------------- ---------- -----------------",
+"Branch           Last commit Last author   Last subject                Merged     Status vs        ",
+"                                                                       into HEAD? upstream         ",
+"---------------- ----------- ------------- --------------------------- ---------- -----------------",
+"  a-master       2019-03-01  Jane Smithers Do some things to the code  Not merged Up to date       ",
+"  b/other-branch 2019-05-02  John Smith    Implement that cool feature Not merged Behind 15        ",
+"* c-another-one  2017-11-24  John Smith    Fix that bug                Merged     No upstream      ",
+"  d-fourth       2017-11-24  John Smith    Fix that bug                Not merged No upstream      ",
+"  e-fifth        2010-08-08  Alicia Keys   More things                 Merged     Ahead 1, behind 2",
+"---------------- ----------- ------------- --------------------------- ---------- -----------------",
           ].join($/)
 
           subject

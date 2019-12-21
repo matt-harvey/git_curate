@@ -29,9 +29,7 @@ module GitCurate
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
 
-      table = Tabulo::Table.new(branches, vertical_rule_character: " ", intersection_character: " ",
-        horizontal_rule_character: "-", column_padding: 0, align_header: :left) do |t|
-
+      table = Tabulo::Table.new(branches, border: :reduced_ascii, column_padding: 0, align_header: :left) do |t|
         t.add_column(:branch, header: "Branch") { |b| b.displayable_name(pad: !interactive?) }
         t.add_column("Last commit", &:last_commit_date)
         t.add_column("Last author", &:last_author)
@@ -49,12 +47,12 @@ module GitCurate
       branches_to_delete = []
 
       if !interactive?
-        puts "#{table}#{$/}#{table.horizontal_rule}"
+        puts table
         return EXIT_SUCCESS
       end
 
       table.each_with_index do |row, index|
-        case HighLine.ask("#{row}#{prompt}").downcase
+        case HighLine.ask("#{row} #{prompt}").downcase
         when "y"
           branches_to_delete << row.source
         when "n", ""
