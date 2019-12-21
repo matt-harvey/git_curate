@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.7.3
+
+* Remove blank vertical gutters either side of output table
+* Dependency versions updated
+
 ### v0.7.2
 
 * Nicer error messages; for example, if `git curate` is run outside of a git repo, the user will now see
