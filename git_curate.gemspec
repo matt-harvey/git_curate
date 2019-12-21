@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "highline", "2.0.2"
+  spec.add_runtime_dependency "highline", "2.0.3"
   spec.add_runtime_dependency "tabulo", "2.1.0"
   spec.add_runtime_dependency "tty-screen", "0.7.0"
 
