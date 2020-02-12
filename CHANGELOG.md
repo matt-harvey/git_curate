@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.7.4
+
+* Dependency version upgrades
+
 ### v0.7.3
 
 * Remove blank vertical gutters either side of output table
