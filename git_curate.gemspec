@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/matt-harvey/git_curate"
   spec.license       = "MIT"
 
-  spec.required_ruby_version = ">= 2.1.10"
+  spec.required_ruby_version = ">= 2.2.10"
 
   spec.metadata = {
     "source_code_uri" => "https://github.com/matt-harvey/git_curate",
