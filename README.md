@@ -30,7 +30,7 @@ as per their remote repository, you should run `git fetch` first.
 
 ## Installation
 
-You'll need Ruby v2.1.10 or higher. Run
+You'll need Ruby v2.2.10 or higher. Run
 
 ```
 gem install git_curate

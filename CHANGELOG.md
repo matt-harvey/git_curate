@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.7.5
+
+* Drop support for Ruby 2.1
+* Dependency version upgrades
+
 ### v0.7.4
 
 * Dependency version upgrades
