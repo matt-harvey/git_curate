@@ -29,13 +29,13 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "highline", "2.0.3"
-  spec.add_runtime_dependency "tabulo", "2.3.0"
-  spec.add_runtime_dependency "tty-screen", "0.7.0"
+  spec.add_runtime_dependency "tabulo", "2.4.0"
+  spec.add_runtime_dependency "tty-screen", "0.7.1"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "coveralls"
-  spec.add_development_dependency "rake", "~> 12.3"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rake-version", "~> 1.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rspec", "~> 3.9"
   spec.add_development_dependency "simplecov"
 end
