@@ -60,7 +60,7 @@ Note the branch you are currently on will not be included in the list, as `git` 
 the branch you're on.
 
 If you just want to view the information about your local branches without stepping through
-them interactively, enter `git branch --list` or `git branch -l`. Your current branch _will_
+them interactively, enter `git curate --list` or `git curate -l`. Your current branch _will_
 be included in this list in this case.
 
 ## Contributing
