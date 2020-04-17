@@ -37,9 +37,10 @@ module GitCurate
 
       table = Tabulo::Table.new(branches, border: :reduced_ascii, column_padding: 0, align_header: :left) do |t|
         t.add_column(:branch, header: "Branch") { |b| b.displayable_name(pad: !interactive?) }
-        t.add_column("Last commit#{$/}date", &:last_commit_date)
-        t.add_column("Last author", &:last_author)
-        t.add_column("Last subject", &:last_subject)
+        t.add_column("Last commit:#{$/}Date", &:last_commit_date)
+        t.add_column("#{$/}Hash", &:hash)
+        t.add_column("#{$/}Author", &:last_author)
+        t.add_column("#{$/}Subject", &:last_subject)
         t.add_column("Merged#{$/}into HEAD?") { |b| b.merged? ? "Merged" : "Not merged" }
         t.add_column("Status vs#{$/}upstream", &:upstream_info)
       end

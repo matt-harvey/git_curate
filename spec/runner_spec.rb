@@ -19,26 +19,31 @@ describe GitCurate::Runner do
       (@captured_output ||= []).clear
 
       @branch_0 = GitCurate::Branch.new("a-master", merged: false, upstream_info: "Up to date")
+      allow(@branch_0).to receive(:hash).and_return("80abe0c")
       allow(@branch_0).to receive(:last_commit_date).and_return("2019-03-01")
       allow(@branch_0).to receive(:last_author).and_return("Jane Smithers")
       allow(@branch_0).to receive(:last_subject).and_return("Do some things to the code")
 
       @branch_1 = GitCurate::Branch.new("b/other-branch", merged: false, upstream_info: "Behind 15")
+      allow(@branch_1).to receive(:hash).and_return("10abf0c")
       allow(@branch_1).to receive(:last_commit_date).and_return("2019-05-02")
       allow(@branch_1).to receive(:last_author).and_return("John Smith")
       allow(@branch_1).to receive(:last_subject).and_return("Implement that cool feature")
 
       @branch_2 = GitCurate::Branch.new("* c-another-one", merged: true, upstream_info: "No upstream")
+      allow(@branch_2).to receive(:hash).and_return("90abfbc")
       allow(@branch_2).to receive(:last_commit_date).and_return("2017-11-24")
       allow(@branch_2).to receive(:last_author).and_return("John Smith")
       allow(@branch_2).to receive(:last_subject).and_return("Fix that bug")
 
       @branch_3 = GitCurate::Branch.new("d-fourth", merged: false, upstream_info: "No upstream")
+      allow(@branch_3).to receive(:hash).and_return("90abfbc")
       allow(@branch_3).to receive(:last_commit_date).and_return("2017-11-24")
       allow(@branch_3).to receive(:last_author).and_return("John Smith")
       allow(@branch_3).to receive(:last_subject).and_return("Fix that bug")
 
       @branch_4 = GitCurate::Branch.new("e-fifth", merged: true, upstream_info: "Ahead 1, behind 2")
+      allow(@branch_4).to receive(:hash).and_return("134698e")
       allow(@branch_4).to receive(:last_commit_date).and_return("2010-08-08")
       allow(@branch_4).to receive(:last_author).and_return("Alicia Keys")
       allow(@branch_4).to receive(:last_subject).and_return("More things")
@@ -72,16 +77,16 @@ describe GitCurate::Runner do
         it "outputs a list of branch information" do
           # Doing it like this to stop text editor automatically deleting trailing whitespace
           expected_output = [
-"---------------- ----------- ------------- --------------------------- ---------- -----------------",
-"Branch           Last commit Last author   Last subject                Merged     Status vs        ",
-"                 date                                                  into HEAD? upstream         ",
-"---------------- ----------- ------------- --------------------------- ---------- -----------------",
-"  a-master       2019-03-01  Jane Smithers Do some things to the code  Not merged Up to date       ",
-"  b/other-branch 2019-05-02  John Smith    Implement that cool feature Not merged Behind 15        ",
-"* c-another-one  2017-11-24  John Smith    Fix that bug                Merged     No upstream      ",
-"  d-fourth       2017-11-24  John Smith    Fix that bug                Not merged No upstream      ",
-"  e-fifth        2010-08-08  Alicia Keys   More things                 Merged     Ahead 1, behind 2",
-"---------------- ----------- ------------- --------------------------- ---------- -----------------",
+"---------------- ------------ ------- ------------- --------------------------- ---------- -----------------",
+"Branch           Last commit:                                                   Merged     Status vs        ",
+"                 Date         Hash    Author        Subject                     into HEAD? upstream         ",
+"---------------- ------------ ------- ------------- --------------------------- ---------- -----------------",
+"  a-master       2019-03-01   80abe0c Jane Smithers Do some things to the code  Not merged Up to date       ",
+"  b/other-branch 2019-05-02   10abf0c John Smith    Implement that cool feature Not merged Behind 15        ",
+"* c-another-one  2017-11-24   90abfbc John Smith    Fix that bug                Merged     No upstream      ",
+"  d-fourth       2017-11-24   90abfbc John Smith    Fix that bug                Not merged No upstream      ",
+"  e-fifth        2010-08-08   134698e Alicia Keys   More things                 Merged     Ahead 1, behind 2",
+"---------------- ------------ ------- ------------- --------------------------- ---------- -----------------",
           ].join($/)
 
           subject

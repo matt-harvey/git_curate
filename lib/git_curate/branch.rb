@@ -50,6 +50,11 @@ module GitCurate
       @last_commit_date
     end
 
+    def hash
+      initialize_last_commit_data
+      @hash
+    end
+
     def last_author
       initialize_last_commit_data
       @last_author
@@ -109,10 +114,10 @@ module GitCurate
 
       # For Windows compatibility we need double quotes around the format string, as well as spaces
       # between the placeholders.
-      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" #{proper_name} --)
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" #{proper_name} --)
       @last_commit_data = Util.command_to_a(command)
 
-      @last_commit_date, @last_author, @last_subject = @last_commit_data
+      @last_commit_date, @hash, @last_author, @last_subject = @last_commit_data
     end
 
   end

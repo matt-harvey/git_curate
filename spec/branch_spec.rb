@@ -88,13 +88,26 @@ describe GitCurate::Branch do
   describe "#last_author" do
     it "returns the output from calling `git log -n1 --format=format:%an` with the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something", merged: false, upstream_info: "whatever")
-      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
-        and_return("2019-07-08#{$/}John Smith <js@example.com>#{$/}Fix all the things")
+        and_return("2019-07-08#{$/}80abe0c#{$/}John Smith <js@example.com>#{$/}Fix all the things")
 
       expect(branch.last_author).to eq("John Smith <js@example.com>")
+    end
+  end
+
+  describe "#hash" do
+    it "returns the output from calling `git log -n1 --format=format:%h` with the proper name of the branch" do
+      branch = GitCurate::Branch.new("* feature/something", merged: false, upstream_info: "whatever")
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" feature/something --)
+      allow(GitCurate::Util).to \
+        receive(:command_output).
+        with(command).
+        and_return("2019-07-08#{$/}80abe0c#{$/}John Smith <js@example.com>#{$/}Fix all the things")
+
+      expect(branch.hash).to eq("80abe0c")
     end
   end
 
@@ -102,11 +115,11 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --date=short --format=format:%cd` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something", merged: true, upstream_info: "whatever")
-      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
-        and_return("2019-07-08#{$/}John Smith <js@example.com>#{$/}Fix all the things")
+        and_return("2019-07-08#{$/}80abe0c#{$/}John Smith <js@example.com>#{$/}Fix all the things")
 
       expect(branch.last_commit_date).to eq("2019-07-08")
     end
@@ -116,11 +129,11 @@ describe GitCurate::Branch do
     it "returns the output from calling `git log -n1 --format=format:%s` with "\
       "the proper name of the branch" do
       branch = GitCurate::Branch.new("* feature/something", merged: true, upstream_info: "whatever")
-      command = %Q(git log -n1 --date=short --format=format:"%cd %n %an %n %s" feature/something --)
+      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" feature/something --)
       allow(GitCurate::Util).to \
         receive(:command_output).
         with(command).
-        and_return("2019-07-08#{$/}John Smith <js@example.com>#{$/}Fix all the things")
+        and_return("2019-07-08#{$/}80abe0c#{$/}John Smith <js@example.com>#{$/}Fix all the things")
 
       expect(branch.last_subject).to eq("Fix all the things")
     end
