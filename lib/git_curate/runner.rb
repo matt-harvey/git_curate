@@ -27,6 +27,7 @@ module GitCurate
       end
 
       if interactive?
+        puts
         print_help
         puts
       end
