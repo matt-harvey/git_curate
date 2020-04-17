@@ -4,7 +4,6 @@ describe GitCurate::Runner do
 
   describe "#initialize" do
     it "returns a Runner initialized with the passed options" do
-      options = { list: true }
       runner = GitCurate::Runner.new(list: true)
 
       expect(runner.instance_variable_get("@opts")[:list]).to eq(true)
@@ -17,6 +16,8 @@ describe GitCurate::Runner do
     let(:list) { true }
 
     before(:each) do
+      (@captured_output ||= []).clear
+
       @branch_0 = GitCurate::Branch.new("a-master", merged: false, upstream_info: "Up to date")
       allow(@branch_0).to receive(:last_commit_date).and_return("2019-03-01")
       allow(@branch_0).to receive(:last_author).and_return("Jane Smithers")
@@ -44,11 +45,7 @@ describe GitCurate::Runner do
 
       allow(GitCurate::Branch).to receive(:local).and_return([@branch_0, @branch_1, @branch_2, @branch_3, @branch_4])
       allow(TTY::Screen).to receive(:width).and_return(200)
-      allow($stdout).to receive(:puts) { |output| @captured_output = output.to_s }
-    end
-
-    after(:each) do
-      @captured_output = nil
+      allow($stdout).to receive(:puts) { |output| @captured_output << output.to_s }
     end
 
     context "when passed arguments" do
@@ -77,7 +74,7 @@ describe GitCurate::Runner do
           expected_output = [
 "---------------- ----------- ------------- --------------------------- ---------- -----------------",
 "Branch           Last commit Last author   Last subject                Merged     Status vs        ",
-"                                                                       into HEAD? upstream         ",
+"                 date                                                  into HEAD? upstream         ",
 "---------------- ----------- ------------- --------------------------- ---------- -----------------",
 "  a-master       2019-03-01  Jane Smithers Do some things to the code  Not merged Up to date       ",
 "  b/other-branch 2019-05-02  John Smith    Implement that cool feature Not merged Behind 15        ",
@@ -89,7 +86,7 @@ describe GitCurate::Runner do
 
           subject
 
-          expect(@captured_output).to eq(expected_output)
+          expect(@captured_output.last).to eq(expected_output)
         end
 
         it "returns a code of 0, indicating success" do
@@ -99,15 +96,15 @@ describe GitCurate::Runner do
 
       context "when Runner was initialized with `list: false`" do
         let(:list) { false }
-        let(:user_responses) { ["y", "", "N", "Y"] }
+        let(:user_responses) { ["d", "", "K", "D"] }
         before(:each) { allow(HighLine).to receive(:ask).and_return(*user_responses) }
 
-        it "prompts the user once for each branch other than the current one, continuing if the user enters a y/Y/n/N/<blank>" do
+        it "prompts the user once for each branch other than the current one, continuing if the user enters a d/D/k/K/<blank>" do
           expect(HighLine).to receive(:ask).exactly(4).times
           subject
         end
 
-        it "deletes each branch for which the user enters 'y' or 'Y'" do
+        it "deletes each branch for which the user enters 'd' or 'D'" do
           expect(GitCurate::Branch).to receive(:delete_multi).with(@branch_0, @branch_4)
           subject
         end
@@ -116,8 +113,8 @@ describe GitCurate::Runner do
           is_expected.to eq(0)
         end
 
-        context "when the user enters 'abort'" do
-          let(:user_responses) { ["y", "Y", "abort"] }
+        context "when the user enters 'a'" do
+          let(:user_responses) { ["d", "D", "a"] }
 
           it "exits early" do
             expect(HighLine).to receive(:ask).exactly(3).times
@@ -134,15 +131,15 @@ describe GitCurate::Runner do
           end
         end
 
-        context "when the user enters 'done'" do
-          let(:user_responses) { ["y", "", "done"] }
+        context "when the user enters 'e'" do
+          let(:user_responses) { ["d", "", "e"] }
 
           it "exits early" do
             expect(HighLine).to receive(:ask).exactly(3).times
             subject
           end
 
-          it "deletes the branches that the user has selected for deletion using 'y'/'Y'" do
+          it "deletes the branches that the user has selected for deletion using 'd'/'D'" do
             expect(GitCurate::Branch).to receive(:delete_multi).with(@branch_0)
             subject
           end
@@ -153,20 +150,20 @@ describe GitCurate::Runner do
         end
 
         context "when the user enters 'help'" do
-          let(:user_responses) { ["n", "help", "n", "n"] }
+          let(:user_responses) { ["k", "help", "k", "k"] }
 
           it "outputs help text" do
-            expected_help_text = <<-EOL
-  Simply hit <Enter> to keep this branch and skip to the next one;
-  or enter one of the following commands:
-    y      -- mark branch for deletion
-    n      -- keep branch (equivalent to just <Enter>)
-    done   -- delete selected branches and exit session
-    abort  -- abort without deleting any branches
-    help   -- print this help message
-  EOL
-            expect($stdout).to receive(:puts).with(expected_help_text)
+            # Doing it like this to stop text editor automatically deleting trailing whitespace
+            expected_help_text = [
+              "           d : delete branch                              ",
+              " k / <enter> : keep branch                                ",
+              "           e : end session, deleting all selected branches",
+              "           a : abort session, keeping all branches        ",
+            ].join($/)
+
             subject
+
+            expect(@captured_output).to include(expected_help_text)
           end
         end
       end

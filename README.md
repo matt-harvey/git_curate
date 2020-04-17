@@ -17,6 +17,7 @@ one at a time and _then_ running `git branch -D` in a separate step, is painful.
 a time, outputting the following information about each:
 
 * Last commit date
+* Last commit hash
 * Last commit author
 * Last commit subject
 * Whether the branch has been merged into the current HEAD
@@ -49,11 +50,11 @@ git curate
 This will step you through your local branches one at a time, outputting some information about
 each, and asking you whether to keep or delete each branch.
 
-At each branch, enter "n"&mdash;or simply press Enter&mdash;to _keep_ the branch and move to the next one;
-or enter "y" to select the branch for deletion.
+At each branch, enter "k"&mdash;or simply press Enter&mdash;to _keep_ the branch and move to the next one;
+or enter "d" to select the branch for deletion.
 
-Entering "done" will conclude the session immediately, deleting all selected branches; and "abort" will
-end the session without deleting any branches. Once the final branch has been considered,
+Entering "e" will end the session immediately, deleting all selected branches; and "a" will
+abort the session without deleting any branches. Once the final branch has been considered,
 any selected branches will be immediately deleted.
 
 Note the branch you are currently on will not be included in the list, as `git` does not allow you to delete

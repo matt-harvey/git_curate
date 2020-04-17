@@ -26,6 +26,9 @@ module GitCurate
         return EXIT_FAILURE
       end
 
+      print_help
+      puts
+
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
 
@@ -38,9 +41,10 @@ module GitCurate
         t.add_column("Status vs#{$/}upstream", &:upstream_info)
       end
 
-      prompt = " Delete? [y/N/done/abort/help] "
-      longest_response = "abort"
-      prompt_and_response_width = (interactive? ? (prompt.length + longest_response.length + 1) : 0)
+      responses = %w[d K e a]
+      prompt = "[#{responses.join("/")}] "
+      longest_response_length = responses.map(&:length).max
+      prompt_and_response_width = (interactive? ? (prompt.length + longest_response_length + 1) : 0)
       max_table_width = TTY::Screen.width - prompt_and_response_width
       table.pack(max_table_width: max_table_width)
 
@@ -53,15 +57,15 @@ module GitCurate
 
       table.each_with_index do |row, index|
         case HighLine.ask("#{row} #{prompt}").downcase
-        when "y"
+        when "d"
           branches_to_delete << row.source
-        when "n", ""
+        when "k", ""
           ;  # do nothing
-        when "done"
+        when "e"
           puts table.horizontal_rule
           finalize(branches_to_delete)
           return EXIT_SUCCESS
-        when "abort"
+        when "a"
           puts table.horizontal_rule
           puts "#{$/}Aborting. No branches deleted."
           return EXIT_SUCCESS
@@ -95,15 +99,19 @@ module GitCurate
     end
 
     def print_help
-      puts <<-EOL
-  Simply hit <Enter> to keep this branch and skip to the next one;
-  or enter one of the following commands:
-    y      -- mark branch for deletion
-    n      -- keep branch (equivalent to just <Enter>)
-    done   -- delete selected branches and exit session
-    abort  -- abort without deleting any branches
-    help   -- print this help message
-  EOL
+      instructions = [
+        ["d :", "delete branch"],
+        ["k / <enter> :", "keep branch"],
+        ["e :", "end session, deleting all selected branches"],
+        ["a :", "abort session, keeping all branches"],
+      ]
+      instructions_table = Tabulo::Table.new(instructions, border: :blank, header_frequency: nil,
+        column_padding: [1, 0]) do |t|
+
+        t.add_column(0, align_body: :right, &:first)
+        t.add_column(1, &:last)
+      end
+      puts instructions_table.pack
     end
 
   end
