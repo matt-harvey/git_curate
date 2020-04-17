@@ -44,10 +44,8 @@ module GitCurate
         t.add_column("Status vs#{$/}upstream", &:upstream_info)
       end
 
-      responses = %w[d K e a]
-      prompt = "[#{responses.join("/")}] "
-      longest_response_length = responses.map(&:length).max
-      prompt_and_response_width = (interactive? ? (prompt.length + longest_response_length + 1) : 0)
+      prompt = " d/[k]/e/a ? "
+      prompt_and_response_width = (interactive? ? (prompt.length + 2) : 0)
       max_table_width = TTY::Screen.width - prompt_and_response_width
       table.pack(max_table_width: max_table_width)
 
