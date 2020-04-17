@@ -1,5 +1,14 @@
 # Changelog
 
+### v0.8.0
+
+* Change options to make them more memorable/obvious
+* Always print options legend at top, if in interactive mode
+* Add a column showing last commit hash
+* Tweak column header layout
+* Fix warnings on Ruby 2.7
+* Fix minor error in README
+
 ### v0.7.5
 
 * Drop support for Ruby 2.1
