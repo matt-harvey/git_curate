@@ -26,8 +26,10 @@ module GitCurate
         return EXIT_FAILURE
       end
 
-      print_help
-      puts
+      if interactive?
+        print_help
+        puts
+      end
 
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
