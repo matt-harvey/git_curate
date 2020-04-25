@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.0.0
+
+* Remove support for Ruby < v2.4.9.
+
 ### v0.8.0
 
 * Change options to make them more memorable/obvious
