@@ -3,12 +3,14 @@ module GitCurate
   class Branch
 
     # Regex for determining whether a "raw" branch name is the name of the current branch
-    CURRENT_BRANCH_REGEX = /^\*\s+/
+    # on this or another worktree.
+    CURRENT_BRANCH_REGEX = /^[+*]\s+/
 
     # Regexes for unpacking the output of `git branch -vv`
     BRANCH_NAME_REGEX = /\s+/
     LEADING_STAR_REGEX = /^\* /
-    REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+\[(.+?)\]/
+    LEADING_PLUS_REGEX = /^\+ /
+    REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+(\(.+\)\s+)?\[(?<remote_info>.+)\]/
 
     # Returns the branch name, with "* " prefixed if it's the current branch.
     attr_reader :raw_name
@@ -22,9 +24,19 @@ module GitCurate
       @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
     end
 
-    # Returns truthy if and only if this is the currently checked out branch.
+    # Returns truthy if and only if this is the currently checked out branch on the current
+    # worktree.
+    def current_branch_this_worktree?
+      @current_branch_this_worktree ||= (@raw_name =~ LEADING_STAR_REGEX)
+    end
+
+    # Returns truthy if and only if this is the currently checked out branch on another worktree.
+    def current_branch_other_worktree?
+      @current_branch_other_worktree ||= (@raw_name =~ LEADING_PLUS_REGEX)
+    end
+
     def current?
-      @current ||= (@raw_name =~ CURRENT_BRANCH_REGEX)
+      current_branch_this_worktree? || current_branch_other_worktree?
     end
 
     # Return truthy if and only if this branch has been merged into the current HEAD.
@@ -81,11 +93,18 @@ module GitCurate
     # date, or ahead/behind).
     def self.branch_info
       Util.command_to_a("git branch -vv").map do |line|
-        line_is_current_branch = (line =~ LEADING_STAR_REGEX)
-        tidied_line = (line_is_current_branch ? line.gsub(LEADING_STAR_REGEX, "") : line)
+        line_is_current_branch = (line =~ CURRENT_BRANCH_REGEX)
+        tidied_line = (line_is_current_branch ? line.gsub(CURRENT_BRANCH_REGEX, "") : line)
         proper_branch_name = tidied_line.split(BRANCH_NAME_REGEX)[0]
-        raw_branch_name = (line_is_current_branch ? "* #{proper_branch_name}" : proper_branch_name)
-        remote_info = tidied_line[REMOTE_INFO_REGEX, 1]
+        raw_branch_name =
+          if line =~ LEADING_STAR_REGEX
+            "* #{proper_branch_name}"
+          elsif line =~ LEADING_PLUS_REGEX
+            "+ #{proper_branch_name}"
+          else
+            proper_branch_name
+          end
+        remote_info = tidied_line[REMOTE_INFO_REGEX, :remote_info]
         upstream_info =
           if remote_info.nil?
             "No upstream"
@@ -101,7 +120,8 @@ module GitCurate
       Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
     end
 
-    # raw_name should start in "* " if the current branch, but should otherwise have not whitespace.
+    # raw_name should start in "* " if the current branch on this worktree, "+ " if it's the current
+    # branch on another worktree, or otherwise have no whitespace.
     def initialize(raw_name, merged:, upstream_info:)
       @raw_name = raw_name
       @merged = merged

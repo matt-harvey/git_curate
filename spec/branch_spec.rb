@@ -12,12 +12,13 @@ describe GitCurate::Branch do
   end
 
   describe "#proper_name" do
-    it "returns the @raw_name, sans any leading whitespace, sans any leading '* '" do
+    it "returns the @raw_name, sans any leading whitespace, sans any leading '* ' or '+ '" do
       {
         "some-branch"            => "some-branch",
         "  \t some-other-branch" => "some-other-branch",
         "  * another-one"        => "another-one",
         "* and-this-one"         => "and-this-one",
+        "+ and-this-one-here"    => "and-this-one-here",
       }.each do |raw_name, expected_proper_name|
 
         branch = GitCurate::Branch.new(raw_name, merged: true, upstream_info: "whatever")
@@ -142,20 +143,20 @@ describe GitCurate::Branch do
   describe ".local" do
     it "returns an array of all the local branches" do
       allow(GitCurate::Util).to receive(:command_to_a).with("git branch --merged").and_return([
-        "release",
+        "+ release",
         "something",
       ])
       allow(GitCurate::Util).to receive(:command_to_a).with("git branch -vv").and_return([
-        "* master      5ec7d75 [origin/master] Note untested on Windows",
+        "* master    5ec7d75 [origin/master] Note untested on Windows",
         "one-command 8827957 WIP... One entry moves",
-        "release     5ec7d75 Note untested on Windows",
+        "+ release   5ec7d75 (/home/someone/blah/bloo) Note untested on Windows",
         "something   6ef7375 [origin/something: behind 15] Words etc",
         "yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc",
-        "save        a49ea12 [origin/save: ahead 1, behind 2] Save board to disk after each move",
+        "+ save      a49ea12 (/home/someone/blah/bleep) [origin/save: ahead 1, behind 2] Save board to disk after each move",
       ])
       result = GitCurate::Branch.local
       expect(result.map(&:raw_name)).to \
-        eq(["* master", "one-command", "release", "something", "yeah-thing", "save"])
+        eq(["* master", "one-command", "+ release", "something", "yeah-thing", "+ save"])
       expect(result.map(&:merged?)).to \
         eq([false, false, true, true, false, false])
       expect(result.map(&:upstream_info)).to \
