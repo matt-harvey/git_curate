@@ -11,7 +11,7 @@
 
 After a while, my local repo becomes cluttered with branches, and `git branch` outputs an awkwardly
 long list. I want to delete some of those branches to bring that list back under control; but I
-can't always remember which branches I want to keep from the branch names alone; and inspecting them
+can&#8217;t always remember which branches I want to keep from the branch names alone; and inspecting them
 one at a time and _then_ running `git branch -D` in a separate step, is painful.
 
 `git curate` is intended to ease this pain. It steps you through the local branches of a repo one at
@@ -27,12 +27,12 @@ a time, outputting the following information about each:
 You can then select whether to delete or keep each branch as you go.
 
 **NOTE** `git curate` does _not_ run `git fetch` prior to generating its output. If you want to
-be sure that the "Status vs upstream" column reflects the latest state of the upstream branches
+be sure that the &ldquo;Status vs upstream&rdquo; column reflects the latest state of the upstream branches
 as per their remote repository, you should run `git fetch` first.
 
 ## Installation
 
-You'll need Ruby (v2.4.9 or greater) installed. Run:
+You&#8217;ll need Ruby (v2.4.9 or greater) installed. Run:
 
 ```
 gem install git_curate
@@ -51,15 +51,16 @@ git curate
 This will step you through your local branches one at a time, outputting some information about
 each, and asking you whether to keep or delete each branch.
 
-At each branch, enter "k"&mdash;or simply press Enter&mdash;to _keep_ the branch and move to the next one;
-or enter "d" to select the branch for deletion.
+At each branch, enter &ldquo;k&rdquo;&mdash;or simply press Enter&mdash;to _keep_ the branch and move to the next one;
+or enter &ldquo;d&rdquo; to select the branch for deletion.
 
-Entering "e" will end the session immediately, deleting all selected branches; and "a" will
+Entering &ldquo;e&rdquo; will end the session immediately, deleting all selected branches; and &ldquo;a&rdquo; will
 abort the session without deleting any branches. Once the final branch has been considered,
 any selected branches will be immediately deleted.
 
 Note the branch you are currently on will not be included in the list, as `git` does not allow you to delete
-the branch you're on.
+the branch you&#8217;re on. (The same applies to any branches that are currently checked out in other
+[worktrees](https://git-scm.com/docs/git-worktree).)
 
 If you just want to view the information about your local branches without stepping through
 them interactively, enter `git curate --list` or `git curate -l`. Your current branch _will_
