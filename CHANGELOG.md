@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.0.1
+
+* Fix `fatal: bad revision '+'` error on encountering multiple worktrees.
+
 ### v1.0.0
 
 * Remove support for Ruby < v2.4.9.
