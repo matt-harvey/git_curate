@@ -21,6 +21,15 @@ describe GitCurate::Util do
       end
     end
 
+    context "when there is an invalid byte sequence in the output" do
+      let(:output) { "branch-\xC3" }
+      let(:err_output) { "" }
+
+      it "replace the invalid byte sequence" do
+        is_expected.to eq(["branch-\xC3".force_encoding('ASCII-8BIT')])
+      end
+    end
+
     context "when passed a system command that returns one line of output" do
       let(:output) { "  \t  hi   " }
       let(:err_output) { "" }
