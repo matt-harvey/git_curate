@@ -142,9 +142,22 @@ describe GitCurate::Branch do
 
   describe ".local" do
     it "returns an array of all the local branches" do
+      allow(GitCurate::Util).to receive(:command_to_a).
+        with("git for-each-ref --format='%(refname:short) .. %(upstream:short)' refs/heads").and_return([
+          "master .. origin/master",
+          "one-command .. ",
+          "release .. ",
+          "something .. origin/something",
+          "yeah-thing .. origin/yeah-thing",
+          "save .. origin/save",
+          "branchy ..",
+          "branchy2 .. origin/branchy2",
+          "branchy3 .. origin/branchy3",
+        ])
       allow(GitCurate::Util).to receive(:command_to_a).with("git branch --merged").and_return([
         "+ release",
         "something",
+        "branchy2",
       ])
       allow(GitCurate::Util).to receive(:command_to_a).with("git branch -vv").and_return([
         "* master    5ec7d75 [origin/master] Note untested on Windows",
@@ -153,14 +166,19 @@ describe GitCurate::Branch do
         "something   6ef7375 [origin/something: behind 15] Words etc",
         "yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc",
         "+ save      a49ea12 (/home/someone/blah/bleep) [origin/save: ahead 1, behind 2] Save board to disk after each move",
+        "branchy     a48ef02 [origin/branchy] Testing weird case where pseudo remote branch name is in commit message",
+        "branchy2    f48ef02 [origin/branchy2] [origin/branchy3] Or this other weird case",
+        "branchy3    f48ef12 [origin/branchy3: ahead 3] [origin/branchy1: behind 3] Or this other weird case",
       ])
       result = GitCurate::Branch.local
       expect(result.map(&:raw_name)).to \
-        eq(["* master", "one-command", "+ release", "something", "yeah-thing", "+ save"])
+        eq(["* master", "one-command", "+ release", "something", "yeah-thing", "+ save", "branchy", "branchy2",
+          "branchy3",])
       expect(result.map(&:merged?)).to \
-        eq([false, false, true, true, false, false])
+        eq([false, false, true, true, false, false, false, true, false])
       expect(result.map(&:upstream_info)).to \
-        eq(["Up to date", "No upstream", "No upstream", "Behind 15", "Ahead 2", "Ahead 1, behind 2"])
+        eq(["Up to date", "No upstream", "No upstream", "Behind 15", "Ahead 2", "Ahead 1, behind 2", "No upstream",
+          "Up to date", "Ahead 3"])
     end
   end
 

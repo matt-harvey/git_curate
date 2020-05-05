@@ -10,7 +10,7 @@ module GitCurate
     BRANCH_NAME_REGEX = /\s+/
     LEADING_STAR_REGEX = /^\* /
     LEADING_PLUS_REGEX = /^\+ /
-    REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+(\(.+\)\s+)?\[(?<remote_info>.+)\]/
+    REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+(\(.+\)\s+)?\[(?<remote_info>[^\]]+)\]/
 
     # Returns the branch name, with "* " prefixed if it's the current branch.
     attr_reader :raw_name
@@ -81,7 +81,15 @@ module GitCurate
     # a brief description of each branch's status relative to its upstream branch (up to
     # date, or ahead/behind).
     def self.branch_info
-      Util.command_to_a("git branch -vv").map do |line|
+      command_0 = "git for-each-ref --format='%(refname:short) .. %(upstream:short)' refs/heads"
+      command_1 = "git branch -vv"
+
+      branches_with_remotes = Util.command_to_a(command_0).map do |line|
+        parts = line.split(" .. ")
+        [parts[0], parts[1] || nil]
+      end.to_h
+
+      info = Util.command_to_a(command_1).map do |line|
         line_is_current_branch = (line =~ CURRENT_BRANCH_REGEX)
         tidied_line = (line_is_current_branch ? line.gsub(CURRENT_BRANCH_REGEX, "") : line)
         proper_branch_name = tidied_line.split(BRANCH_NAME_REGEX)[0]
@@ -93,16 +101,18 @@ module GitCurate
           else
             proper_branch_name
           end
-        remote_info = tidied_line[REMOTE_INFO_REGEX, :remote_info]
         upstream_info =
-          if remote_info.nil?
-            "No upstream"
-          else
+          if branches_with_remotes[proper_branch_name]
+            remote_info = tidied_line[REMOTE_INFO_REGEX, :remote_info]
             comparison_raw = remote_info.split(":")
             comparison_raw.length < 2 ? "Up to date" : comparison_raw[1].strip.capitalize
+          else
+            "No upstream"
           end
         [raw_branch_name, upstream_info]
-      end.to_h
+      end
+
+      info.to_h
     end
 
     def self.delete_multi(*branches)
