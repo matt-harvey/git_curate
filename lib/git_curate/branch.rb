@@ -24,19 +24,8 @@ module GitCurate
       @proper_name ||= @raw_name.lstrip.sub(CURRENT_BRANCH_REGEX, '')
     end
 
-    # Returns truthy if and only if this is the currently checked out branch on the current
-    # worktree.
-    def current_branch_this_worktree?
-      @current_branch_this_worktree ||= (@raw_name =~ LEADING_STAR_REGEX)
-    end
-
-    # Returns truthy if and only if this is the currently checked out branch on another worktree.
-    def current_branch_other_worktree?
-      @current_branch_other_worktree ||= (@raw_name =~ LEADING_PLUS_REGEX)
-    end
-
     def current?
-      current_branch_this_worktree? || current_branch_other_worktree?
+      @current ||= (@raw_name =~ CURRENT_BRANCH_REGEX)
     end
 
     # Return truthy if and only if this branch has been merged into the current HEAD.
