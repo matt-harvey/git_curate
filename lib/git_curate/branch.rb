@@ -86,7 +86,7 @@ module GitCurate
 
       branches_with_remotes = Util.command_to_a(command_0).map do |line|
         parts = line.split(" .. ")
-        [parts[0], parts[1] || nil]
+        [parts[0], parts[1]]
       end.to_h
 
       info = Util.command_to_a(command_1).map do |line|
