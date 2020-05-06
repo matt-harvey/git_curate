@@ -142,33 +142,33 @@ describe GitCurate::Branch do
 
   describe ".local" do
     it "returns an array of all the local branches" do
-      allow(GitCurate::Util).to receive(:command_to_a).
-        with("git for-each-ref --format='%(refname:short) .. %(upstream:short)' refs/heads").and_return([
-          "master .. origin/master",
-          "one-command .. ",
-          "release .. ",
-          "something .. origin/something",
-          "yeah-thing .. origin/yeah-thing",
-          "save .. origin/save",
-          "branchy ..",
-          "branchy2 .. origin/branchy2",
-          "branchy3 .. origin/branchy3",
+      command = "git for-each-ref --format='%(refname:short) .. %(upstream:short) .. %(upstream:track)' refs/heads"
+      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return([
+          "master .. origin/master ..",
+          "one-command ..  ..",
+          "release ..  ..",
+          "something .. origin/something .. [behind 15]",
+          "yeah-thing .. origin/yeah-thing .. [ahead 2]",
+          "save .. origin/save .. [ahead 1, behind 2]",
+          "branchy ..  ..",
+          "branchy2 .. origin/branchy2 ..",
+          "branchy3 .. origin/branchy3 .. [ahead 3] ..",
         ])
       allow(GitCurate::Util).to receive(:command_to_a).with("git branch --merged").and_return([
         "+ release",
         "something",
         "branchy2",
       ])
-      allow(GitCurate::Util).to receive(:command_to_a).with("git branch -vv").and_return([
-        "* master    5ec7d75 [origin/master] Note untested on Windows",
-        "one-command 8827957 WIP... One entry moves",
-        "+ release   5ec7d75 (/home/someone/blah/bloo) Note untested on Windows",
-        "something   6ef7375 [origin/something: behind 15] Words etc",
-        "yeah-thing  7efe3b5 [origin/yeah-thing: ahead 2] Words etc",
-        "+ save      a49ea12 (/home/someone/blah/bleep) [origin/save: ahead 1, behind 2] Save board to disk after each move",
-        "branchy     a48ef02 [origin/branchy] Testing weird case where pseudo remote branch name is in commit message",
-        "branchy2    f48ef02 [origin/branchy2] [origin/branchy3] Or this other weird case",
-        "branchy3    f48ef12 [origin/branchy3: ahead 3] [origin/branchy1: behind 3] Or this other weird case",
+      allow(GitCurate::Util).to receive(:command_to_a).with("git branch").and_return([
+        "* master",
+        "one-command",
+        "+ release",
+        "something",
+        "yeah-thing",
+        "+ save",
+        "branchy",
+        "branchy2",
+        "branchy3",
       ])
       result = GitCurate::Branch.local
       expect(result.map(&:raw_name)).to \

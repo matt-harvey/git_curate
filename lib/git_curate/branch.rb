@@ -1,16 +1,12 @@
 module GitCurate
 
+  UpstreamInfo = Struct.new(:upstream, :status)
+
   class Branch
 
     # Regex for determining whether a "raw" branch name is the name of the current branch
     # on this or another worktree.
     CURRENT_BRANCH_REGEX = /^[+*]\s+/
-
-    # Regexes for unpacking the output of `git branch -vv`
-    BRANCH_NAME_REGEX = /\s+/
-    LEADING_STAR_REGEX = /^\* /
-    LEADING_PLUS_REGEX = /^\+ /
-    REMOTE_INFO_REGEX = /^[^\s]+\s+[^\s]+\s+(\(.+\)\s+)?\[(?<remote_info>[^\]]+)\]/
 
     # Returns the branch name, with "* " prefixed if it's the current branch.
     attr_reader :raw_name
@@ -81,35 +77,30 @@ module GitCurate
     # a brief description of each branch's status relative to its upstream branch (up to
     # date, or ahead/behind).
     def self.branch_info
-      command_0 = "git for-each-ref --format='%(refname:short) .. %(upstream:short)' refs/heads"
-      command_1 = "git branch -vv"
-
-      branches_with_remotes = Util.command_to_a(command_0).map do |line|
-        parts = line.split(" .. ")
-        [parts[0], parts[1]]
+      command = "git for-each-ref --format='%(refname:short) .. %(upstream:short) .. %(upstream:track)' refs/heads"
+      branches_with_remotes = Util.command_to_a(command).map do |line|
+        puts "DEBUG line: #{line}"
+        parts = line.split("..", -1).map { |s| s.strip! ; s.empty? ? nil : s }
+        puts "DEBUG parts: #{parts}"
+        [parts[0], UpstreamInfo.new(parts[1], parts[2])]
       end.to_h
 
-      info = Util.command_to_a(command_1).map do |line|
-        line_is_current_branch = (line =~ CURRENT_BRANCH_REGEX)
-        tidied_line = (line_is_current_branch ? line.gsub(CURRENT_BRANCH_REGEX, "") : line)
-        proper_branch_name = tidied_line.split(BRANCH_NAME_REGEX)[0]
-        raw_branch_name =
-          if line =~ LEADING_STAR_REGEX
-            "* #{proper_branch_name}"
-          elsif line =~ LEADING_PLUS_REGEX
-            "+ #{proper_branch_name}"
-          else
-            proper_branch_name
-          end
-        upstream_info =
-          if branches_with_remotes[proper_branch_name]
-            remote_info = tidied_line[REMOTE_INFO_REGEX, :remote_info]
-            comparison_raw = remote_info.split(":")
-            comparison_raw.length < 2 ? "Up to date" : comparison_raw[1].strip.capitalize
+      info = Util.command_to_a("git branch").map do |line|
+        raw_branch_name = line.strip
+        proper_branch_name = raw_branch_name.gsub(CURRENT_BRANCH_REGEX, "")
+        upstream_info = branches_with_remotes[proper_branch_name]
+        upstream_data =
+          if upstream_info.upstream
+            status = upstream_info.status
+            if status
+              status.gsub(/^\[/, "").gsub(/\]$/, "").capitalize
+            else
+              "Up to date"
+            end
           else
             "No upstream"
           end
-        [raw_branch_name, upstream_info]
+        [raw_branch_name, upstream_data]
       end
 
       info.to_h
