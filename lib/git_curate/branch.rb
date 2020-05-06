@@ -79,9 +79,7 @@ module GitCurate
     def self.branch_info
       command = "git for-each-ref --format='%(refname:short) .. %(upstream:short) .. %(upstream:track)' refs/heads"
       branches_with_remotes = Util.command_to_a(command).map do |line|
-        puts "DEBUG line: #{line}"
         parts = line.split("..", -1).map { |s| s.strip! ; s.empty? ? nil : s }
-        puts "DEBUG parts: #{parts}"
         [parts[0], UpstreamInfo.new(parts[1], parts[2])]
       end.to_h
 
