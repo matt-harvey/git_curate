@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.0.2
+
+* Fix incorrect status-vs-upstream when commit subject begins with square-bracket-enclosed string.
+
 ### v1.0.1
 
 * Fix `fatal: bad revision '+'` error on encountering multiple worktrees.
