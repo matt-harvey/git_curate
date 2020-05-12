@@ -8,7 +8,8 @@ module GitCurate
     # on this or another worktree.
     CURRENT_BRANCH_REGEX = /^[+*]\s+/
 
-    # Returns the branch name, with "* " prefixed if it's the current branch.
+    # Returns the branch name, with "* " prefixed if it's the current branch on the current
+    # worktree, or "+ " if it's the current branch on another worktree.
     attr_reader :raw_name
 
     # Returns a human-friendly string describing the status of the branch relative to the upstream branch
