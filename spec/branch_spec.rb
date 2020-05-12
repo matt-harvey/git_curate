@@ -142,7 +142,7 @@ describe GitCurate::Branch do
 
   describe ".local" do
     it "returns an array of all the local branches" do
-      command = "git for-each-ref --format='%(refname:short) .. %(upstream:short) .. %(upstream:track)' refs/heads"
+      command = 'git for-each-ref --format="%(refname:short) .. %(upstream:short) .. %(upstream:track)" refs/heads'
       allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return([
           "master .. origin/master ..",
           "one-command ..  ..",
