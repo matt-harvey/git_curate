@@ -1,5 +1,21 @@
 # Changelog
 
+### v1.1.0
+
+#### Change that may be breaking for an obscure use case
+
+* Output more helpful message in case there are no deletable branches when `git curate` run without `-l`/`--list` flag.
+
+This will be a breaking change but only in the unlikely event that the output of `git curate` is being piped
+through or processed by another program when run in _interactive_ (non-`--list`) mode.
+
+_New behaviour when there are no deletable branches:_
+Outputs `There are no local branches that can be deleted.`
+
+_Old behaviour when there are no deletable branches:_
+Outputs (irrelevantly and confusingly) the legend of interactive commands, followed by the message
+`No branches deleted.`
+
 ### v1.0.2
 
 * Fix incorrect status-vs-upstream when commit subject begins with square-bracket-enclosed string.
