@@ -30,7 +30,7 @@ module GitCurate
       branches.reject!(&:current?) if interactive?
 
       table = Tabulo::Table.new(branches, border: :reduced_ascii, column_padding: 0, align_header: :left) do |t|
-        t.add_column(:branch, header: "Branch") { |b| b.displayable_name(pad: !interactive?) }
+        t.add_column("Branch") { |b| b.displayable_name(pad: !interactive?) }
         t.add_column("Last commit:#{$/}Date", &:last_commit_date)
         t.add_column("#{$/}Hash", &:hash)
         t.add_column("#{$/}Author", &:last_author)
