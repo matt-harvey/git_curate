@@ -77,8 +77,7 @@ To run the test suite, run `bundle exec rake spec`. For a list of other Rake tas
 
 ## License
 
-The gem is available as open source under the terms of the [MIT
-License](http://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 [Gem Version]: https://rubygems.org/gems/git_curate
 [Build Status]: https://travis-ci.org/matt-harvey/git_curate
