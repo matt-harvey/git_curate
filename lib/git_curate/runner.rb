@@ -26,12 +26,6 @@ module GitCurate
         return EXIT_FAILURE
       end
 
-      if interactive?
-        puts
-        print_help
-        puts
-      end
-
       branches = Branch.local
       branches.reject!(&:current?) if interactive?
 
@@ -56,6 +50,15 @@ module GitCurate
         puts table
         return EXIT_SUCCESS
       end
+
+      if branches.empty?
+        puts "There are no local branches that can be deleted."
+        return EXIT_SUCCESS
+      end
+
+      puts
+      print_help
+      puts
 
       table.each_with_index do |row, index|
         case HighLine.ask("#{row} #{prompt}").downcase
