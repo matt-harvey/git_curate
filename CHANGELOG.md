@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.1.1
+
+* Dependency version upgrades
+
 ### v1.1.0
 
 #### Change that may be breaking for an obscure use case
