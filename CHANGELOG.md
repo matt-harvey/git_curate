@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.1.2
+
+* Dependency version upgrades
+* Include Ruby v3 in automated tests
+
 ### v1.1.1
 
 * Dependency version upgrades
