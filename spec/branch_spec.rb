@@ -140,47 +140,7 @@ describe GitCurate::Branch do
     end
   end
 
-  describe ".local" do
-    it "returns an array of all the local branches" do
-      command = 'git for-each-ref --format="%(refname:short) .. %(upstream:short) .. %(upstream:track)" refs/heads'
-      allow(GitCurate::Util).to receive(:command_to_a).with(command).and_return([
-          "master .. origin/master ..",
-          "one-command ..  ..",
-          "release ..  ..",
-          "something .. origin/something .. [behind 15]",
-          "yeah-thing .. origin/yeah-thing .. [ahead 2]",
-          "save .. origin/save .. [ahead 1, behind 2]",
-          "branchy ..  ..",
-          "branchy2 .. origin/branchy2 ..",
-          "branchy3 .. origin/branchy3 .. [ahead 3] ..",
-        ])
-      allow(GitCurate::Util).to receive(:command_to_a).with("git branch --merged").and_return([
-        "+ release",
-        "something",
-        "branchy2",
-      ])
-      allow(GitCurate::Util).to receive(:command_to_a).with("git branch").and_return([
-        "* master",
-        "one-command",
-        "+ release",
-        "something",
-        "yeah-thing",
-        "+ save",
-        "branchy",
-        "branchy2",
-        "branchy3",
-      ])
-      result = GitCurate::Branch.local
-      expect(result.map(&:raw_name)).to \
-        eq(["* master", "one-command", "+ release", "something", "yeah-thing", "+ save", "branchy", "branchy2",
-          "branchy3",])
-      expect(result.map(&:merged?)).to \
-        eq([false, false, true, true, false, false, false, true, false])
-      expect(result.map(&:upstream_info)).to \
-        eq(["Up to date", "No upstream", "No upstream", "Behind 15", "Ahead 2", "Ahead 1, behind 2", "No upstream",
-          "Up to date", "Ahead 3"])
-    end
-  end
+  pending ".local"
 
   describe ".delete_multi" do
     it "deletes each of the passed branches by passing their proper names to the `git branch -D` system command" do

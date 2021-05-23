@@ -1,8 +1,12 @@
+require "rugged"
+
 module GitCurate
 
   UpstreamInfo = Struct.new(:upstream, :status)
 
   class Branch
+
+    @@repo = Rugged::Repository.new(".")
 
     # Regex for determining whether a "raw" branch name is the name of the current branch
     # on this or another worktree.
@@ -65,46 +69,42 @@ module GitCurate
 
     # Returns the local branches
     def self.local
-      merged_branch_raw_names = Util.command_to_a("git branch --merged").to_set
+      rugged_branches = @@repo.branches
+      repo_head_target = @@repo.head.target
 
-      branch_info.map do |raw_name, info|
-        new(raw_name, merged: merged_branch_raw_names.include?(raw_name), upstream_info: info)
-      end
-    end
-
-    private
-
-    # Returns a Hash containing, as keys, the raw names of all local branches and, as values,
-    # a brief description of each branch's status relative to its upstream branch (up to
-    # date, or ahead/behind).
-    def self.branch_info
-      # Double quotes around the format string to ensure Windows compatibility.
-      command = 'git for-each-ref --format="%(refname:short) .. %(upstream:short) .. %(upstream:track)" refs/heads'
-      branches_with_remotes = Util.command_to_a(command).map do |line|
-        parts = line.split("..", -1).map { |s| s.strip! ; s.empty? ? nil : s }
-        [parts[0], UpstreamInfo.new(parts[1], parts[2])]
-      end.to_h
-
-      info = Util.command_to_a("git branch").map do |line|
+      Util.command_to_a("git branch").map do |line|
         raw_branch_name = line.strip
         proper_branch_name = raw_branch_name.gsub(CURRENT_BRANCH_REGEX, "")
-        upstream_info = branches_with_remotes[proper_branch_name]
+        rugged_branch = rugged_branches[proper_branch_name]
+        upstream = rugged_branch.upstream
         upstream_data =
-          if upstream_info.upstream
-            status = upstream_info.status
-            if status
-              status.gsub(/^\[/, "").gsub(/\]$/, "").capitalize
+          if upstream
+            target_id = rugged_branch.target_id
+            ahead, behind = @@repo.ahead_behind(target_id, upstream.target_id)
+            parts = []
+            parts << "ahead #{ahead}" if ahead != 0
+            parts << "behind #{behind}" if behind != 0
+            if parts.any?
+              parts.join(", ").capitalize
             else
               "Up to date"
             end
           else
             "No upstream"
           end
-        [raw_branch_name, upstream_data]
-      end
 
-      info.to_h
+        target = rugged_branch.resolve.target
+        merged = (@@repo.merge_base(repo_head_target, target) == target.oid)
+
+        new(
+          raw_branch_name,
+          merged: merged,
+          upstream_info: upstream_data,
+        )
+      end
     end
+
+    private
 
     def self.delete_multi(*branches)
       Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
