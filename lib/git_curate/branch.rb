@@ -123,7 +123,6 @@ module GitCurate
       @upstream_info = upstream_info
     end
 
-    # Returns an array with [date, author, subject], each as a string.
     def initialize_last_commit_data
       return if @last_commit_data
 
