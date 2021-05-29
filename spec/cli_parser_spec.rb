@@ -38,7 +38,7 @@ describe GitCurate::CLIParser do
         end
 
         it "prints application version and copyright information" do
-          expect { subject }.to output(/git curate v\d+\.\d+\.\d+ \(c\) \d{4} Matthew Harvey/).to_stdout
+          expect { subject }.to output(/git curate v\d+\.\d+\.\d+(\.beta\d?)? \(c\) \d{4} Matthew Harvey/).to_stdout
         end
       end
 
