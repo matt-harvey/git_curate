@@ -6,8 +6,6 @@ module GitCurate
 
   class Branch
 
-    @@repo = Rugged::Repository.new(".")
-
     # Regex for determining whether a "raw" branch name is the name of the current branch
     # on this or another worktree.
     CURRENT_BRANCH_REGEX = /^[+*]\s+/
@@ -69,8 +67,10 @@ module GitCurate
 
     # Returns the local branches
     def self.local
-      rugged_branches = @@repo.branches
-      repo_head_target = @@repo.head.target
+      repo = initialize_rugged
+
+      rugged_branches = repo.branches
+      repo_head_target = repo.head.target
 
       Util.command_to_a("git branch").map do |line|
         raw_branch_name = line.strip
@@ -80,7 +80,7 @@ module GitCurate
         upstream_data =
           if upstream
             target_id = rugged_branch.target_id
-            ahead, behind = @@repo.ahead_behind(target_id, upstream.target_id)
+            ahead, behind = repo.ahead_behind(target_id, upstream.target_id)
             parts = []
             parts << "ahead #{ahead}" if ahead != 0
             parts << "behind #{behind}" if behind != 0
@@ -94,7 +94,7 @@ module GitCurate
           end
 
         target = rugged_branch.resolve.target
-        merged = (@@repo.merge_base(repo_head_target, target) == target.oid)
+        merged = (repo.merge_base(repo_head_target, target) == target.oid)
 
         new(
           raw_branch_name,
@@ -105,6 +105,11 @@ module GitCurate
     end
 
     private
+
+    def self.initialize_rugged
+      toplevel_dir = Util.command_output("git rev-parse --show-toplevel").strip
+      Rugged::Repository.new(toplevel_dir)
+    end
 
     def self.delete_multi(*branches)
       Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
