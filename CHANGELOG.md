@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.2.0.beta
+
+* Fix for issue #16: "undefined method upstream" error on MacOS 15.7
+* Add rugged library
+
 ### v1.1.2
 
 * Dependency version upgrades
