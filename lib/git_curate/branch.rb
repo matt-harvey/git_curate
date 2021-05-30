@@ -2,8 +2,6 @@ require "rugged"
 
 module GitCurate
 
-  UpstreamInfo = Struct.new(:upstream, :status)
-
   class Branch
 
     # Regex for determining whether a "raw" branch name is the name of the current branch
@@ -46,28 +44,25 @@ module GitCurate
     end
 
     def last_commit_date
-      initialize_last_commit_data
-      @last_commit_date
+      last_commit.date
     end
 
     def hash
-      initialize_last_commit_data
-      @hash
+      last_commit.hash
     end
 
     def last_author
-      initialize_last_commit_data
-      @last_author
+      last_commit.author
     end
 
     def last_subject
-      initialize_last_commit_data
-      @last_subject
+      last_commit.subject
     end
 
     # Returns the local branches
     def self.local
-      repo = initialize_rugged
+      toplevel_dir = Util.command_output("git rev-parse --show-toplevel").strip
+      repo = Rugged::Repository.new(toplevel_dir)
 
       rugged_branches = repo.branches
       repo_head_target = repo.head.target
@@ -106,11 +101,6 @@ module GitCurate
 
     private
 
-    def self.initialize_rugged
-      toplevel_dir = Util.command_output("git rev-parse --show-toplevel").strip
-      Rugged::Repository.new(toplevel_dir)
-    end
-
     def self.delete_multi(*branches)
       Util.command_output("git branch -D #{branches.map(&:proper_name).join(" ")} --")
     end
@@ -123,15 +113,13 @@ module GitCurate
       @upstream_info = upstream_info
     end
 
-    def initialize_last_commit_data
-      return if @last_commit_data
-
-      # For Windows compatibility we need double quotes around the format string, as well as spaces
-      # between the placeholders.
-      command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" #{proper_name} --)
-      @last_commit_data = Util.command_to_a(command)
-
-      @last_commit_date, @hash, @last_author, @last_subject = @last_commit_data
+    def last_commit
+      @last_commit ||= begin
+        # For Windows compatibility we need double quotes around the format string, as well as spaces
+        # between the placeholders.
+        command = %Q(git log -n1 --date=short --format=format:"%cd %n %h %n %an %n %s" #{proper_name} --)
+        Commit.new(*Util.command_to_a(command))
+      end
     end
 
   end
