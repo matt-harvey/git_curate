@@ -1,9 +1,12 @@
 # Changelog
 
-### v1.2.0.beta, v1.2.0.beta2, v1.2.0.beta3
+### v1.2.0
 
-* Fix for issue #16: "undefined method upstream" error on MacOS 15.7
-* Add rugged library
+* Fix issue #16: "undefined method 'upstream'" error on MacOS 15.7
+* Use [rugged](https://github.com/libgit2/rugged) library to get various branch information,
+  decreasing reliance of parsing `git` CLI output, and increasing robustness of the application
+  across platforms.
+* Dependency version upgrades
 
 ### v1.1.2
 
