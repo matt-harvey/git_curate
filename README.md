@@ -79,9 +79,9 @@ To run the test suite, run `bundle exec rake spec`. For a list of other Rake tas
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 [Gem Version]: https://rubygems.org/gems/git_curate
-[Build Status]: https://travis-ci.org/matt-harvey/git_curate
+[Build Status]: https://github.com/matt-harvey/git_curate/actions/workflows/tests.yml
 [Awesome Ruby]: https://awesome-ruby.com/#-git-tools
 
 [GV img]: https://img.shields.io/gem/v/git_curate.svg
-[BS img]: https://img.shields.io/travis/matt-harvey/git_curate.svg
+[BS img]: https://github.com/matt-harvey/git_curate/actions/workflows/tests.yml/badge.svg
 [AR img]: https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg
