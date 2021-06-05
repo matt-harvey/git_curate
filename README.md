@@ -40,6 +40,15 @@ gem install git_curate
 
 to install the executable.
 
+Note `git_curate` uses the [rugged](https://github.com/libgit2/rugged) library, which comes with a
+native C extension, `libgit2`. Installation via `gem install git_curate` will trigger this extension
+to be compiled; this may take a few minutes, depending on your machine.
+
+If you receive an error like `ERROR: Failed to build gem native extension`, it&#8217;s probably because
+your system lacks certain prerequisites needed for building `libgit2`, for example `cmake`. To fix this,
+first follow the [installation instructions for rugged](https://github.com/libgit2/rugged#install); then
+run `gem install git_curate` again.
+
 ## Usage
 
 From within a git repo, run:
