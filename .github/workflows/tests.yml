@@ -35,4 +35,21 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: bundle exec rake
+      run: bundle exec rspec
+    - name: Report to Coveralls
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.github_token }}
+        flag-name: test-${{ matrix.ruby }}-${{ matrix.gemfile }}
+        parallel: true
+
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Report completion to Coveralls
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: truec

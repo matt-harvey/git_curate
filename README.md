@@ -2,6 +2,7 @@
 
 [![Gem Version][GV img]][Gem Version]
 [![Build Status][BS img]][Build Status]
+[![Coverage Status][CS img]][Coverage Status]
 [![Awesome][AR img]][Awesome Ruby]
 
 <img src="https://raw.githubusercontent.com/matt-harvey/git_curate/master/assets/demo.gif" width="1000" alt="Demo" />
@@ -80,8 +81,10 @@ The gem is available as open source under the terms of the [MIT License](http://
 
 [Gem Version]: https://rubygems.org/gems/git_curate
 [Build Status]: https://github.com/matt-harvey/git_curate/actions/workflows/tests.yml
+[Coverage Status]: https://coveralls.io/github/matt-harvey/git_curate
 [Awesome Ruby]: https://awesome-ruby.com/#-git-tools
 
 [GV img]: https://img.shields.io/gem/v/git_curate.svg
 [BS img]: https://github.com/matt-harvey/git_curate/actions/workflows/tests.yml/badge.svg
+[CS img]: https://img.shields.io/coveralls/matt-harvey/git_curate.svg
 [AR img]: https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg

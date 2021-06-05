@@ -34,9 +34,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "tty-screen", "0.8.1"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "coveralls"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rake-version", "~> 1.0"
   spec.add_development_dependency "rspec", "~> 3.9"
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "simplecov-lcov"
 end
