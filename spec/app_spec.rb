@@ -61,7 +61,7 @@ describe GitCurate::App do
 
       it "proceeds to process the git branches with a Runner instance, passing the runner the parsed options" do
         allow(runner).to receive(:run)
-        expect(GitCurate::Runner).to receive(:new).with(list: true)
+        expect(GitCurate::Runner).to receive(:new).with({ list: true })
         expect(runner).to receive(:run)
         subject
       end
