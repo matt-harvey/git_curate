@@ -1,5 +1,11 @@
 # Changelog
 
+### v1.2.1
+
+* Dependency version upgrades
+* GitHub actions replaces Travis for CI
+* Better installation instructions around 'rugged' dependency
+
 ### v1.2.0
 
 * Fix issue #16: "undefined method 'upstream'" error on MacOS 15.7
