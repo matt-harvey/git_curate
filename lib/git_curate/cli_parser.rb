@@ -38,6 +38,20 @@ module GitCurate
           self.parsed_options[:list] = true
         end
 
+        opts.on(
+          "--merged",
+          "Only list branches whose tips are reachable from HEAD",
+        ) do
+          self.parsed_options[:merged_opt] = "--merged"
+        end
+
+        opts.on(
+          "--no-merged",
+          "Only list branches whose tips are not reachable from HEAD",
+        ) do
+          self.parsed_options[:merged_opt] = "--no-merged"
+        end
+
         opts.on("-h", "Print this help message") do
           puts opts
           return false

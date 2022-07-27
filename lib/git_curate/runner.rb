@@ -26,7 +26,7 @@ module GitCurate
         return EXIT_FAILURE
       end
 
-      branches = Branch.local
+      branches = Branch.local(@opts[:merged_opt])
       branches.reject!(&:current?) if interactive?
 
       table = Tabulo::Table.new(branches, border: :reduced_ascii, column_padding: 0, align_header: :left) do |t|
@@ -47,7 +47,7 @@ module GitCurate
       branches_to_delete = []
 
       if !interactive?
-        puts table
+        puts table if branches.any?
         return EXIT_SUCCESS
       end
 

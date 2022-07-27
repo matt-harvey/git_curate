@@ -60,14 +60,16 @@ module GitCurate
     end
 
     # Returns the local branches
-    def self.local
+    def self.local(merged_opt)
       toplevel_dir = Util.command_output("git rev-parse --show-toplevel").strip
       repo = Rugged::Repository.new(toplevel_dir)
 
       rugged_branches = repo.branches
       repo_head_target = repo.head.target
 
-      Util.command_to_a("git branch").map do |line|
+      command = "git branch" + (merged_opt ? " #{merged_opt}" : "")
+
+      Util.command_to_a(command).map do |line|
         raw_branch_name = line.strip
         proper_branch_name = raw_branch_name.gsub(CURRENT_BRANCH_REGEX, "")
         rugged_branch = rugged_branches[proper_branch_name]
