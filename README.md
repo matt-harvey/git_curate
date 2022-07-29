@@ -75,6 +75,9 @@ If you just want to view the information about your local branches without stepp
 them interactively, enter `git curate --list` or `git curate -l`. Your current branch _will_
 be included in this list in this case.
 
+You can also pass `--merged` to see only those branches merged into current `HEAD`; or `--no-merged`
+to see only those branches _not_ merged into current `HEAD`.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/matt-harvey/git_curate).
