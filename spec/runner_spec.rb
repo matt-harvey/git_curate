@@ -4,16 +4,22 @@ describe GitCurate::Runner do
 
   describe "#initialize" do
     it "returns a Runner initialized with the passed options" do
-      runner = GitCurate::Runner.new(list: true)
+      runner0 = GitCurate::Runner.new(list: true)
+      expect(runner0.instance_variable_get("@opts")[:list]).to eq(true)
+      expect(runner0.instance_variable_get("@opts")[:merged_opt]).to eq(nil)
 
-      expect(runner.instance_variable_get("@opts")[:list]).to eq(true)
+      runner1 = GitCurate::Runner.new(list: false, merged_opt: "--no-merged")
+      expect(runner1.instance_variable_get("@opts")[:list]).to eq(false)
+      expect(runner1.instance_variable_get("@opts")[:merged_opt]).to eq("--no-merged")
     end
   end
 
   describe "#run" do
     subject { runner.run(args) }
-    let(:runner) { GitCurate::Runner.new(list: list) }
+    let(:runner) { GitCurate::Runner.new(opts) }
+    let(:opts) { { list: list, merged_opt: merged_opt } }
     let(:list) { true }
+    let(:merged_opt) { nil }
 
     before(:each) do
       @branch_0 = GitCurate::Branch.new("a-master", merged: false, upstream_info: "Up to date")
@@ -74,6 +80,24 @@ describe GitCurate::Runner do
       context "when not passed any arguments" do
         let(:args) { [] }
         before(:each) { allow(GitCurate::Branch).to receive(:delete_multi) }
+
+        context "when Runner was initialized with `merged_opt: '--no-merged'`" do
+          let(:merged_opt) { "--no-merged" }
+
+          it "lists only non-merged branches" do
+            expect(GitCurate::Branch).to receive(:local).with("--no-merged")
+            subject
+          end
+        end
+
+        context "when Runner was initialized with `merged_opt: '--merged'`" do
+          let(:merged_opt) { "--merged" }
+
+          it "lists only merged branches" do
+            expect(GitCurate::Branch).to receive(:local).with("--merged")
+            subject
+          end
+        end
 
         context "when Runner was initialized with `list: true`" do
           let(:list) { true }
