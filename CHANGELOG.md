@@ -1,5 +1,10 @@
 # Changelog
 
+### v1.3.0
+
+* Add --merged and --no-merged options
+* Dependency version upgrades
+
 ### v1.2.1
 
 * Dependency version upgrades
