@@ -1,5 +1,10 @@
 # Changelog
 
+### v2.0.0
+
+* Dependency version upgrades
+* Require Ruby 3.1.0
+
 ### v1.3.0
 
 * Add --merged and --no-merged options
