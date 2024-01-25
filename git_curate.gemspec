@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/matt-harvey/git_curate"
   spec.license       = "MIT"
 
-  spec.required_ruby_version = ">= 2.4.9"
+  spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata = {
     "source_code_uri" => "https://github.com/matt-harvey/git_curate",
@@ -28,10 +28,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "highline", "2.0.3"
-  spec.add_runtime_dependency "rugged", "1.5.0.1"
-  spec.add_runtime_dependency "tabulo", "2.8.1"
-  spec.add_runtime_dependency "tty-screen", "0.8.1"
+  spec.add_runtime_dependency "highline", "3.0.1"
+  spec.add_runtime_dependency "rugged", "1.7.1"
+  spec.add_runtime_dependency "tabulo", "3.0.1"
+  spec.add_runtime_dependency "tty-screen", "0.8.2"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 13.0"
