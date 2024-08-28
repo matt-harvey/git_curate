@@ -1,5 +1,9 @@
 # Changelog
 
+### v2.0.1
+
+* Dependency version upgrades
+
 ### v2.0.0
 
 * Dependency version upgrades
