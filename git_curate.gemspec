@@ -28,15 +28,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "highline", "3.0.1"
-  spec.add_runtime_dependency "rugged", "1.7.1"
-  spec.add_runtime_dependency "tabulo", "3.0.1"
+  spec.add_runtime_dependency "highline", "3.1.1"
+  spec.add_runtime_dependency "rugged", "1.7.2"
+  spec.add_runtime_dependency "tabulo", "3.0.2"
   spec.add_runtime_dependency "tty-screen", "0.8.2"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rake-version", "~> 1.0"
-  spec.add_development_dependency "rspec", "~> 3.9"
+  spec.add_development_dependency "rake", "~> 13.2"
+  spec.add_development_dependency "rspec", "~> 3.13"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "simplecov-lcov"
 end

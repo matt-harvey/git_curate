@@ -20,11 +20,11 @@ jobs:
       matrix:
         ruby-version: [
           '3.1.4',
-          '3.2.3',
-          '3.3.0',
+          '3.2.5',
+          '3.3.4',
         ]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -47,7 +47,7 @@ jobs:
     steps:
 
     - name: Report completion to Coveralls
-      uses: coverallsapp/github-action@v1.1.2
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.github_token }}
         parallel-finished: truec
