@@ -23,8 +23,10 @@ jobs:
           '3.2.5',
           '3.3.4',
         ]
+
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -32,10 +34,12 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
     - name: Run tests
       run: bundle exec rspec
-    - name: Report to Coveralls
-      uses: coverallsapp/github-action@v1.1.2
+
+    - name: Coveralls parallel
+      uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.github_token }}
         flag-name: test-${{ matrix.ruby }}-${{ matrix.gemfile }}
@@ -50,4 +54,4 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         github-token: ${{ secrets.github_token }}
-        parallel-finished: truec
+        parallel-finished: true
